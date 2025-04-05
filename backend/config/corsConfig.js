@@ -1,4 +1,4 @@
-const whiteList = ['http://www.google.com', 'http://localhost:3500', 'https://restcountries.com/'];
+const whiteList = ['http://www.google.com', 'http://localhost:3500', 'https://restcountries.com/v3.1/all'];
 const corsOptions = {
     origin: (origin, callback) => {
         if(whiteList.indexOf(origin) !== -1 || !origin) {

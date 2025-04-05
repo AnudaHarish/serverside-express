@@ -24,6 +24,8 @@ app.get("/", (req,res) => {
     res.send("default path");
 });
 
+app.use("/countries", require("./routes/api/countries"));
+
 // app.all("*", (req,res) => {
 //     res.status(404)
 // });
