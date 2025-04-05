@@ -1,0 +1,11 @@
+#dependencies
+node_modules/
+
+#IDE file
+# WebStorm/IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+modules.xml
+.idea_modules/
