@@ -11,11 +11,19 @@ class UserDAO {
         });
     }
 
-    // async getUserById(id){
-    //     const [rows] = await db.query("SELECT * FROM users WHERE id = ?", id);
-    //     return rows;
-    // }
-    //
+    getUserById(id){
+        return new Promise((resolve, reject) => {
+            db.get(
+                `SELECT * FROM users WHERE id = ?`,
+                [id],
+                function (err, rows) {
+                    if (err) reject(err);
+                    else resolve(rows);
+                }
+            );
+        });
+    }
+
     createUser(userData){
         const {username, password} = userData;
         return new Promise((resolve, reject) => {
@@ -28,15 +36,34 @@ class UserDAO {
             );
         });
     }
-    //
-    // async updateUser(id, userData){
-    //     const {username, password} = userData;
-    //     const [result] = await db.query("UPDATE users SET username = ?, password = ? WHERE id = ?",[username, password, id]);
-    // }
-    //
-    // async deleteUser(id){
-    //     const [result] = await db.query("DELETE FROM users WHERE id = ?", id);
-    // }
+
+    updateUser(id, userData){
+        const {username, password} = userData;
+        return new Promise((resolve, reject) => {
+            db.run(
+                `UPDATE users SET username = ?, password = ? WHERE id = ?`,
+                [username, password, id],
+                function (err) {
+                    if (err) reject(err);
+                    else resolve(this.changes);
+                }
+            );
+        });
+
+    }
+
+    deleteUser(id){
+        return new Promise((resolve, reject) => {
+            db.run(
+                `DELETE FROM users WHERE id = ?`,
+                [id],
+                function (err) {
+                    if (err) reject(err);
+                    else resolve(this.changes);
+                }
+            );
+        });
+    }
 }
 
 
