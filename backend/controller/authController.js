@@ -14,7 +14,7 @@ const login = async (req, res) => {
         //check user
         const allUsers = await UserDAO.getAllUsers();
         if(allUsers.length > 0){
-            const selectedUser = allUsers.find(user => user.username === name);
+            const selectedUser = allUsers.find(user => user.username === name && user.password === psw);
             console.log(selectedUser?.id);
             if(!selectedUser) return res.status(400).json({"message": "User not found"});
 
@@ -54,4 +54,20 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = {login}
+const checkAuthentication = (req, res) => {
+    const authHeader = req.headers['authorization'];
+    if(!authHeader) return res.status(403).json({"authenticated": false});
+    console.log(authHeader);
+    const token = authHeader.split(' ')[1];
+    jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, decoded) => {
+            if (err) return res.status(403).json({"authenticated": false}); //invalid token
+            req.user = decoded.username
+            return res.status(200).json({"authenticated": true});
+        }
+    )
+}
+
+module.exports = {login, checkAuthentication};
