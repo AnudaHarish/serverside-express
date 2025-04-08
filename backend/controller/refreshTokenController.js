@@ -15,7 +15,7 @@ const handleRefreshToken = async (req, res) => {
         if(allTokens.length > 0){
             const selectedRefreshToken = allTokens.find(obj => obj.token === refreshToken);
             console.log(selectedRefreshToken);
-            if(!selectedRefreshToken) return res.status(400).json({"message": "User not found"});
+            if(!selectedRefreshToken) return res.status(401).json({"message": "User not found"});
             //find user by id
             const user =await UserDAO.getUserById(selectedRefreshToken.user_id);
             console.log(user);
@@ -25,7 +25,7 @@ const handleRefreshToken = async (req, res) => {
                 refreshToken,
                 process.env["REFRESH_TOKEN_SECRET"],
                 (err, decoded) => {
-                    if(err || user.username !== decoded.username) return res.sendStatus(403);
+                    if(err || user.username !== decoded.username) return res.status(403);
                     const accessToken = jwt.sign(
                         {"username" : decoded.username},
                         process.env["ACCESS_TOKEN_SECRET"],

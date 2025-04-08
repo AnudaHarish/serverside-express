@@ -1,0 +1,31 @@
+<nb-layout>
+
+  <nb-layout-header subheader>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div>
+        <button nbButton ghost (click)="toggleSidebar()">
+          <nb-icon icon="menu-outline"></nb-icon>
+        </button>
+      </div>
+
+      <div>
+        <button nbButton status="danger" (click)="logout()">
+          <nb-icon icon="log-out-outline"></nb-icon>
+          Logout
+        </button>
+      </div>
+    </div>
+  </nb-layout-header>
+  <nb-sidebar>
+    <nb-menu [items]="menuItems"></nb-menu>
+  </nb-sidebar>
+  <nb-layout-column class="colored-column-basic">
+    <router-outlet></router-outlet>
+
+  </nb-layout-column>
+
+  <nb-layout-footer fixed>
+    <!-- Insert footer here -->
+  </nb-layout-footer>
+
+</nb-layout>

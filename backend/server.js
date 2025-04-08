@@ -24,14 +24,15 @@ app.use(cors(corsOptions));
 app.use(logger);
 
 //routes
-app.use("/signup", require("./routes/createUser"));
-app.use("/login", require("./routes/userLogin"));
-app.use("/refresh", require("./routes/refreshToken"));
-app.use("/logout", require("./routes/logout"));
+app.use("/api/signup", require("./routes/createUser"));
+app.use("/api/login", require("./routes/userLogin"));
+
+app.use("/api/refresh", require("./routes/refreshToken"));
+app.use("/api/logout", require("./routes/logout"));
 
 app.use(verifyJwt);
-app.get("/", (req,res) => {
-    res.send("default path");
+app.get("/api", (req,res) => {
+    res.status(200).json({"message":"default path"});
 });
 
 app.use("/countries", require("./routes/countries"));
