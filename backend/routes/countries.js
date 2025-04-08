@@ -1,18 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const fetchCountries = require("../service/fetchCountries");
+const countriesController  = require("../controller/countriesController");
 
-router.route("/")
-    .get( async (req, res) => {
-        try{
-            const countryData = await fetchCountries();
-            res.json(countryData);
-        }catch(err){
-            console.error("Error in fetchCountries", err);
-            res.status(500).send("Internal server error");
-        }
-    });
-
-
+router.get("/nameList", countriesController.handleCountriesName);
+router.get("/:name", countriesController.handleCountriesData);
 
 module.exports = router;
