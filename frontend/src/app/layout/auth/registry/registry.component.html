@@ -6,25 +6,27 @@
           <div class="form">
             <div class="row justify-content-center mb-5">
               <div class="col-auto">
-                <span class="text-dark text-size">Login</span>
+                <span class="text-dark text-size">Register</span>
               </div>
             </div>
             <div class="row">
               <form class="register-form">
                 <div class="row mb-3">
-                    <input nbInput [(ngModel)]="loginObj.name" type="text" placeholder="username" name="username"/>
-                </div>
-                <div class="row">
-                  <input nbInput  [(ngModel)]="loginObj.psw" type="password" placeholder="password" name="password"/>
+                  <div class="col">
+                    <input nbInput [(ngModel)]="registerObj.name" type="text" placeholder="username" name="username"/>
+                  </div>
+                  <div class="col">
+                    <input nbInput  [(ngModel)]="registerObj.psw" type="password" placeholder="password" name="password"/>
+                  </div>
                 </div>
                 <div class="row justify-content-center mt-3">
                   <div class="col-auto">
-                    <button nbButton status="primary" (click)="onSubmit()">Login</button>
+                    <button nbButton status="primary" (click)="onSubmit()">Signup</button>
                   </div>
                 </div>
                 <div class="row justify-content-center mt-2">
                   <div class="col-auto">
-                    <p class="message">Are still not registered? <a routerLink="/registry" style="cursor: pointer">Sign up</a></p>
+                    <p class="message">Already registered? <a routerLink="/login" style="cursor: pointer">Sign In</a></p>
                   </div>
                 </div>
               </form>

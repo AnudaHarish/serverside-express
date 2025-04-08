@@ -24,6 +24,17 @@ export class AuthService {
     );
   }
 
+  register(registerObj:AuthRequest):Observable<any>{
+    return this.http.post<AuthRequest>(
+      `${this.baseUrl}/signup`,
+      registerObj,
+      {observe: 'response'}
+    ).pipe(
+      map((response:any) => { return response}),
+      catchError(this.handleError)
+    )
+  }
+
   handleError(error: HttpErrorResponse): Observable<never> {
     let errorMsg = 'Unknown error';
     this.authStatus.next(false);

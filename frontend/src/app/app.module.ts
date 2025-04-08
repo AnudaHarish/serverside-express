@@ -9,7 +9,7 @@ import {
   NbLayoutModule,
   NbMenuModule,
   NbSidebarModule,
-  NbThemeModule
+  NbThemeModule, NbToastrModule
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -40,6 +40,7 @@ import {AuthModule} from "./layout/auth/auth.module";
     NbMenuModule.forRoot(),
     AuthModule,
     MainModule,
+    NbToastrModule.forRoot(),
   ],
   providers: [
     {

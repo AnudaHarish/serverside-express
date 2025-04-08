@@ -6,6 +6,7 @@ import {DashboardComponent} from "./layout/main/dashboard/dashboard.component";
 import {AuthLayoutComponent} from "./layout/auth/auth-layout/auth-layout.component";
 import {AuthGuard} from "./authGuard/auth.guard";
 import {LoggedGuard} from "./authGuard/logged.guard";
+import {RegistryComponent} from "./layout/auth/registry/registry.component";
 
 const routes: Routes = [
   {
@@ -20,6 +21,11 @@ const routes: Routes = [
       {
         path: 'login',
         component: LoginComponent,
+        canActivate: [LoggedGuard]
+      },
+      {
+        path: 'registry',
+        component: RegistryComponent,
         canActivate: [LoggedGuard]
       }
     ]
