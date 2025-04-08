@@ -17,6 +17,16 @@
     </div>
   </nb-layout-header>
   <nb-sidebar>
+      <!-- Add sidebar header -->
+      <div class="sidebar-header">
+        <nb-card class="sidebar-user-card">
+          <nb-card-body>
+            <div class="user-info">
+              <h5 class="user-name">RestCountries</h5> <!-- Bind to your user data -->
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </div>
     <nb-menu [items]="menuItems"></nb-menu>
   </nb-sidebar>
   <nb-layout-column class="colored-column-basic">

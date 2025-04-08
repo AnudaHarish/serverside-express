@@ -1,17 +1,38 @@
-<div class="login-page">
-  <div class="form">
-    <form class="register-form">
-      <input type="text" placeholder="name"/>
-      <input type="password" placeholder="password"/>
-      <input type="text" placeholder="email address"/>
-      <button>create</button>
-      <p class="message">Already registered? <a href="#">Sign In</a></p>
-    </form>
-    <form class="login-form">
-      <input nbInput [(ngModel)]="loginObj.name" type="text" placeholder="username" name="username"/>
-      <input nbInput [(ngModel)]="loginObj.psw" type="password" placeholder="password" name="password"/>
-      <button nbButton status="primary" (click)="onSubmit()">login</button>
-      <p class="message">Not registered? <a href="#">Create an account</a></p>
-    </form>
-  </div>
+<div class="row align-content-center justify-content-center v-height">
+  <nb-card class="w-50 p-5">
+    <nb-card-body>
+      <div class="row justify-content-center m-auto">
+        <div class="col-auto">
+          <div class="form">
+            <div class="row justify-content-center mb-5">
+              <div class="col-auto">
+                <span class="text-dark text-size">Login</span>
+              </div>
+            </div>
+            <div class="row">
+              <form class="register-form">
+                <div class="row mb-3">
+                    <input nbInput [(ngModel)]="loginObj.name" type="text" placeholder="username" name="username"/>
+                </div>
+                <div class="row">
+                  <input nbInput  [(ngModel)]="loginObj.psw" type="password" placeholder="password" name="password"/>
+                </div>
+                <div class="row justify-content-center mt-3">
+                  <div class="col-auto">
+                    <button nbButton status="primary" (click)="onSubmit()">Login</button>
+                  </div>
+                </div>
+                <div class="row justify-content-center mt-2">
+                  <div class="col-auto">
+                    <p class="message">Are still not registered? <a routerLink="/registry" style="cursor: pointer">Sign up</a></p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
 </div>
+
