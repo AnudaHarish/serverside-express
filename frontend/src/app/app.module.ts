@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import {
+  NbAutocompleteModule,
   NbButtonModule,
   NbInputModule,
   NbLayoutModule,
@@ -41,6 +42,7 @@ import {AuthModule} from "./layout/auth/auth.module";
     AuthModule,
     MainModule,
     NbToastrModule.forRoot(),
+    NbAutocompleteModule
   ],
   providers: [
     {

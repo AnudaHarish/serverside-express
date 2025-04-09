@@ -1,1 +1,56 @@
-<p>dashboard works!</p>
+<div class="row justify-content-center">
+  <div class="col-auto">
+    <nb-card>
+      <nb-card-body>
+        <div class="row justify-content-center">
+          <div class="col-auto">
+            <span>Search Country Info</span>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col">
+              <span>Country: </span>
+              <input
+                nbInput
+                type="text"
+                [formControl]="countryName"
+                placeholder="search country"
+                [nbAutocomplete]="autoControl">
+              <nb-autocomplete #autoControl>
+                <nb-option *ngFor="let option of filteredControlOptions$ | async" [value]="option">
+                  {{option}}
+                </nb-option>
+              </nb-autocomplete>
+            </div>
+          <div class="col mt-3">
+            <button nbButton status="primary" (click)="getCountryDetails()">Search</button>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<div class="row justify-content-center" *ngIf="isVisible">
+  <div class="col-auto">
+    <nb-card style="width: 800px">
+      <nb-card-body>
+        <div class="row justify-content-center mb-3">
+          <div class="col-auto">
+            <span class="text-dark text-large">{{countryObj.name}}</span>
+          </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+          <div class="col-auto border-box">
+            <img [src]="countryObj.flag" [alt]="countryObj.flag + 'flag'" class="img-fluid img-size" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col"><span class="text-dark text-size">Capital:</span> {{countryObj.capital}}</div>
+          <div class="col"><span class="text-dark text-size">Currency:</span> {{countryObj.currency}}</div>
+          <div class="col"><span class="text-dark text-size">Languages:</span> {{countryObj.languages}}</div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

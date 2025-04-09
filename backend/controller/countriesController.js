@@ -32,7 +32,7 @@ const handleNameList = async (req, res) => {
             return res.json(cache.get().data);
         }
 
-        const countryNames = await getAllCountries();
+        const countryNames = await fetchCountries.getAllCountries();
         res.json(countryNames);
     } catch (err) {
         res.status(500).json({
