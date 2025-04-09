@@ -1,3 +1,4 @@
+const cache = require("../utils/cache")
 const fetchCountries = require("../service/fetchCountries");
 const handleCountriesData = async (req, res) => {
     const name = req.params.name;
@@ -25,8 +26,22 @@ const handleCountriesName = async (req, res) => {
     }
 }
 
+const handleNameList = async (req, res) => {
+    try {
+        if (cache.isValid()) {
+            return res.json(cache.get().data);
+        }
+
+        const countryNames = await getAllCountries();
+        res.json(countryNames);
+    } catch (err) {
+        res.status(500).json({
+            error: 'Failed to load country list',
+            details: err.message
+        });
+    }
+};
 
 
 
-
-module.exports = {handleCountriesData, handleCountriesName};
+module.exports = {handleCountriesData, handleNameList};

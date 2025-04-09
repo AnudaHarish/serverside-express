@@ -1,3 +1,5 @@
+const cache = require('../utils/cache');
+const CountryDAO = require("../dao/countryDAO")
 const fetch = require('node-fetch');
 // const fetchCountries = async (name) => {
 //     try{
@@ -25,9 +27,46 @@ const fetchCountries = async (name) => {
     return await fetchWithRetry(url, 3); // Retry 3 times
 };
 
-const fetchCountryName = async () => {
-    const url = `https://restcountries.com/v3.1/all`;
-    return await fetchCountriesWithRetry(url, 3); // Retry 3 times
+const fetchCountriesByRegion = async (region) => {
+    try {
+        const response = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+    } catch (err) {
+        console.error(`Failed to fetch ${region} countries:`, err.message);
+        return [];
+    }
+};
+
+// Cache for API results
+let countryCache = null;
+const CACHE_TTL = 3600000; // 1 hour
+
+const getAllCountries = async () => {
+    try {
+        const regions = ['africa', 'americas', 'asia', 'europe', 'oceania'];
+        const results = await Promise.allSettled(regions.map(fetchCountriesByRegion));
+
+        const countries = results.flatMap(r =>
+            r.status === 'fulfilled' ? r.value : []
+        ).map(country => ({
+            name: country.name.common,
+            region: country.region
+        }));
+
+        const uniqueCountries = [...new Map(countries.map(item => [item.name, item])).values()]
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+        // Fix: Use CountryDAO instead of Country
+        await Promise.all(uniqueCountries.map(c => CountryDAO.create(c)));
+
+        cache.set(uniqueCountries.map(c => c.name));
+        return cache.get().data;
+
+    } catch (apiError) {
+        const dbCountries = await CountryDAO.getAll();
+        return dbCountries.map(c => c.name);
+    }
 };
 
 const fetchWithRetry = async (url, retries = 3) => {
@@ -83,4 +122,4 @@ const fetchCountriesWithRetry = async (url, retries = 3) => {
 };
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-module.exports = {fetchCountries, fetchCountryName};
+module.exports = {fetchCountries, getAllCountries};
