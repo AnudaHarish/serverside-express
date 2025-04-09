@@ -14,14 +14,14 @@ const login = async (req, res) => {
         //check user
         const allUsers = await UserDAO.getAllUsers();
         if(allUsers.length > 0){
-            const selectedUser = allUsers.find(user => user.username === name && user.password === psw);
-            console.log(selectedUser?.id);
+            const selectedUser = allUsers.find(user => user.username === name);
+            console.log(selectedUser);
             if(!selectedUser) return res.status(400).json({"message": "User not found"});
 
             //check password
             const isMatch = await bcrypt.compare(psw, selectedUser.password);
-
-            if(!isMatch){
+            console.log("isMatch", isMatch);
+            if(isMatch){
                 //create jwt token
                 const accessToken = jwt.sign(
                     {"username" : selectedUser.username},

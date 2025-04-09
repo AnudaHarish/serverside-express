@@ -26,7 +26,7 @@ const createUser = async (req, res) => {
         //create user
         const userData = {
             "username": name,
-            "password": psw,
+            "password": hashedPsw,
         }
         await UserDAO.createUser(userData);
         return res.status(201).json({"message":`user ${name} created successfully.`});
