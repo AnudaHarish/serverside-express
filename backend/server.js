@@ -9,7 +9,7 @@ const error = require("./middleware/cutomeErrorLog");
 const cookieParser = require("cookie-parser");
 const db = require("./config/databaseConfig");
 const verifyJwt = require("./middleware/verifyJwt");
-
+const {getAllCountries} = require("./service/fetchCountries");
 //get form data passing through http requests
 //this is default middleware
 app.use(express.urlencoded({ extended: false }));
@@ -23,6 +23,18 @@ app.use(cors(corsOptions));
 //use custom logger
 app.use(logger);
 
+//Initialize cache on start
+async function initializedCache() {
+    try{
+        await getAllCountries();
+        console.log("Country cache initialized");
+    }catch (err){
+        console.error("Cache initialized failed",err.message);
+    }
+}
+
+initializedCache();
+
 //routes
 app.use("/api/signup", require("./routes/createUser"));
 app.use("/api/login", require("./routes/userLogin"));
@@ -35,7 +47,7 @@ app.get("/api", (req,res) => {
     res.status(200).json({"message":"default path"});
 });
 
-app.use("/countries", require("./routes/countries"));
+app.use("/api/countries", require("./routes/countries"));
 
 // app.all("*", (req,res) => {
 //     res.status(404)
