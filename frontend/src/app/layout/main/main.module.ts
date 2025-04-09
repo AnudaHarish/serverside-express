@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import {LayoutComponent} from "./layout/layout.component";
 import {RouterModule} from "@angular/router";
 import {
+  NbAutocompleteModule,
   NbButtonModule,
   NbCardModule,
-  NbIconModule,
+  NbIconModule, NbInputModule,
   NbLayoutModule,
   NbMenuModule,
   NbSidebarModule
 } from "@nebular/theme";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 
 
@@ -29,7 +30,10 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
     NbButtonModule,
     NbCardModule,
     FormsModule,
-    NbIconModule
+    NbIconModule,
+    NbAutocompleteModule,
+    NbInputModule,
+    ReactiveFormsModule,
   ],
   exports: [LayoutComponent, DashboardComponent],
 })
