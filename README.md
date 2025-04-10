@@ -11,11 +11,11 @@ node version: v18.19.0
 frameworks: Anugular, Bootstrap
 run: ng serve - for local running
 
-JWT authentication used for generating access token and the refresh token
-verifyJWT middleware will be used to check for the validity of the token
-Access token will be saved in the application memory and the refresh token will be sent as http only cookie
-When user logout the refesh token will be removed from the refrsh_tokens table
-Access token also will be set as empty string from the frontend
+JWT authentication used for generating access token and the refresh token.
+verifyJWT middleware will be used to check for the validity of the token.
+Access token will be saved in the application memory and the refresh token will be sent as http only cookie.
+When user logout the refesh token will be removed from the refrsh_tokens table.
+Access token also will be set as empty string from the frontend.
 
 
 testing criterias
