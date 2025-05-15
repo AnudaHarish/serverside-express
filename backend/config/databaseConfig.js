@@ -16,6 +16,7 @@ function initialise() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
             password  TEXT NOT NULL,
+            email TEXT NOT NULL,
             created_at DateTime DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS refresh_tokens (

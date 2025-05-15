@@ -6,15 +6,15 @@ require("dotenv").config();
 
 const login = async (req, res) => {
     try{
-        const {name, psw} = req.body;
+        const {email, psw} = req.body;
 
         //check both name and psw exist
-        if(!name || !psw) return res.status(400).json({"message": "Username and Password are required"});
+        if(!email || !psw) return res.status(400).json({"message": "Email and Password are required"});
 
         //check user
         const allUsers = await UserDAO.getAllUsers();
         if(allUsers.length > 0){
-            const selectedUser = allUsers.find(user => user.username === name);
+            const selectedUser = allUsers.find(user => user.email === email);
             console.log(selectedUser);
             if(!selectedUser) return res.status(400).json({"message": "User not found"});
 
@@ -24,12 +24,12 @@ const login = async (req, res) => {
             if(isMatch){
                 //create jwt token
                 const accessToken = jwt.sign(
-                    {"username" : selectedUser.username},
+                    {"email" : selectedUser.email},
                     process.env["ACCESS_TOKEN_SECRET"],
                     {expiresIn: "10m"}
                 );
                 const refreshToken = jwt.sign(
-                    {"username": selectedUser.username},
+                    {"email": selectedUser.email},
                     process.env["REFRESH_TOKEN_SECRET"],
                     {expiresIn: "1d"}
                 );
@@ -39,7 +39,7 @@ const login = async (req, res) => {
                 res.cookie("refreshToken", refreshToken, { httpOnly: true , maxAge: 24 * 60 * 60 * 1000});
                 return res.status(200).json({accessToken});
             }else{
-                return res.status(401).json({"message": "Username or Password is incorrect"});
+                return res.status(401).json({"message": "Email or Password is incorrect"});
             }
         }else{
             return res.status(401).json({"message": "User not found"});
@@ -56,7 +56,7 @@ const login = async (req, res) => {
 
 const checkAuthentication = (req, res) => {
     const authHeader = req.headers['authorization'];
-    if(!authHeader) return res.status(403).json({"authenticated": false});
+    if(!authHeader) return res.status(401).json({"authenticated": false});
     console.log(authHeader);
     const token = authHeader.split(' ')[1];
     jwt.verify(
@@ -64,7 +64,7 @@ const checkAuthentication = (req, res) => {
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
             if (err) return res.status(403).json({"authenticated": false}); //invalid token
-            req.user = decoded.username
+            req.user = decoded.email
             return res.status(200).json({"authenticated": true});
         }
     )

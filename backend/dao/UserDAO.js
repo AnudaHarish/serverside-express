@@ -25,10 +25,10 @@ class UserDAO {
     }
 
     createUser(userData){
-        const {username, password} = userData;
+        const {username, password, email} = userData;
         return new Promise((resolve, reject) => {
             db.run(
-                "INSERT INTO users (username, password) VALUES (?,?)",[username, password],
+                "INSERT INTO users (username, password, email) VALUES (?,?,?)",[username, password, email],
                 function(err) {
                     if (err) return reject(err);
                     else resolve(this.lastID);
@@ -38,18 +38,17 @@ class UserDAO {
     }
 
     updateUser(id, userData){
-        const {username, password} = userData;
+        const {username, password, email} = userData;
         return new Promise((resolve, reject) => {
             db.run(
-                `UPDATE users SET username = ?, password = ? WHERE id = ?`,
-                [username, password, id],
+                `UPDATE users SET username = ?, password = ?, email = ? WHERE id = ?`,
+                [username, password, email, id],
                 function (err) {
                     if (err) reject(err);
                     else resolve(this.changes);
                 }
             );
         });
-
     }
 
     deleteUser(id){
