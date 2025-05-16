@@ -1,6 +1,6 @@
 const db = require("../config/databaseConfig");
 
-const CountryDAO = {
+class CountryDAO {
     //create country records
     create(countryData) {
         const {name, flag, currency, capital, region} = countryData;
@@ -14,7 +14,7 @@ const CountryDAO = {
                 }
             );
         });
-    },
+    }
 
     //retrieve all countries
     getAll(){
@@ -24,7 +24,7 @@ const CountryDAO = {
                 else resolve(rows);
             });
         });
-    },
+    }
 
     //getCountry details
     getByName(name){
@@ -36,6 +36,6 @@ const CountryDAO = {
                 });
         });
     }
-};
+}
 
 module.exports = CountryDAO;
