@@ -38,7 +38,7 @@ const removeReaction = async (req, res) => {
         //get user id
         const user_id = req.user?.id;
         //get blog_post_id, is_like
-        const {blog_post_id} = req.body;
+        const blog_post_id = req.params?.id;
         //validate inputs
         if(!user_id){
             return res.status(401).json({error: "User not authorized"});
@@ -59,7 +59,7 @@ const removeReaction = async (req, res) => {
 //get likes for a post
 const getTotalLikes = async (req, res) => {
     try{
-        const {blog_post_id} = req.body;
+        const blog_post_id = req.params?.id;
         if(blog_post_id === null || blog_post_id === undefined){
             return res.status(400).json({error: "blog post id required"});
         }
@@ -77,7 +77,7 @@ const getTotalLikes = async (req, res) => {
 //get dislikes for a post
 const getTotalDislikes = async (req, res) => {
     try{
-        const {blog_post_id} = req.body;
+        const blog_post_id = req.params?.id;
         if(!blog_post_id){
             return res.status(400).json({error: "blog post id required"});
         }
@@ -93,10 +93,10 @@ const getTotalDislikes = async (req, res) => {
 }
 
 //get reaction of user for a blog post
-const getaReaction = async (req, res) => {
+const getReaction = async (req, res) => {
     try{
         const user_id = req.user?.id;
-        const {blog_post_id} = req.body;
+        const blog_post_id = req.params?.id;
         if(!user_id){
             return res.status(401).json({error: "User not authorized"});
         }
@@ -114,4 +114,4 @@ const getaReaction = async (req, res) => {
     }
 }
 
-module.exports = {addingReaction, removeReaction, getTotalDislikes, getTotalLikes, getaReaction};
+module.exports = {addingReaction, removeReaction, getTotalDislikes, getTotalLikes, getReaction};
