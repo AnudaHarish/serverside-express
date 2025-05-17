@@ -96,7 +96,7 @@ const followUser = async (req, res) => {
         //create relation
         const row_id = await UserFollowerDAO.follow(follower_id, following_id);
 
-        if(!row_id){
+        if(row_id === undefined || row_id === null){
             return res.status(400).json({error : "Error following user "});
         }
         return res.status(200).json({

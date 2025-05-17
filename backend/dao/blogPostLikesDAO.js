@@ -46,14 +46,16 @@ class BlogPostLikesDAO {
 
     //remove a reaction
     removeReaction(blog_post_id,user_id){
-        db.run(
-            "DELETE FROM blog_post_likes WHERE blog_post_id = ? AND user_id = ?",
-            [blog_post_id, user_id],
-            function(err){
-                if(err) return reject(err);
-                else resolve(this.changes);
-            }
-        )
+        return new Promise((resolve, reject) =>{
+            db.run(
+                "DELETE FROM blog_post_likes WHERE blog_post_id = ? AND user_id = ?",
+                [blog_post_id, user_id],
+                function(err){
+                    if(err) return reject(err);
+                    else resolve(this.changes);
+                }
+            )
+        });
     }
 
     //get the reaction by a user for a blog
@@ -62,9 +64,9 @@ class BlogPostLikesDAO {
             db.get(
                 "SELECT * FROM blog_post_likes WHERE blog_post_id = ? AND user_id = ?",
                 [blog_post_id, user_id],
-                (err, rows) => {
+                (err, row) => {
                     if(err) return reject(err);
-                    else resolve(rows);
+                    else resolve(row);
                 }
             );
         })
