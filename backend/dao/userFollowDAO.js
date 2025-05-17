@@ -59,4 +59,4 @@ class UserFollowDAO {
     }
 }
 
-module.exports = UserFollowDAO;
+module.exports = new UserFollowDAO;

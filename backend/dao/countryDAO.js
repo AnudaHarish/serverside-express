@@ -36,6 +36,17 @@ class CountryDAO {
                 });
         });
     }
+
+    getById(id){
+        return new Promise((resolve, reject) => {
+            db.get(
+                "SELECT * FROM countries WHERE id = ?", [id], (err, rows) => {
+                    if(err) return reject(err);
+                    else resolve(rows);
+                }
+            );
+        });
+    }
 }
 
-module.exports = CountryDAO;
+module.exports = new CountryDAO;

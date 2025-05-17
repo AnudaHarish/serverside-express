@@ -80,6 +80,16 @@ class BlogPostDAO {
             );
         });
     }
+
+    //retrieve blog posts filtered by country
+    getByCountryId(country_id) {
+        return new Promise((resolve, reject) => {
+            db.all("SELECT * FROM blog_posts WHERE country_id = ? ORDER BY created_at DESC", [country_id], (err, rows) => {
+                if (err) return reject(err);
+                else resolve(rows);
+            });
+        });
+    }
 }
 
-module.exports = BlogPostDAO;
+module.exports = new BlogPostDAO;

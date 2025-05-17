@@ -71,4 +71,4 @@ class BlogPostLikesDAO {
     }
 }
 
-module.exports = BlogPostLikesDAO;
+module.exports = new BlogPostLikesDAO;
