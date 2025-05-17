@@ -25,10 +25,10 @@ const handleRefreshToken = async (req, res) => {
                 refreshToken,
                 process.env["REFRESH_TOKEN_SECRET"],
                 (err, decoded) => {
-                    if(err || user.email !== decoded.email) return res.status(403);
+                    if(err || user?.id !== decoded?.user?.id) return res.status(403);
                     //generate access token
                     const accessToken = jwt.sign(
-                        {"email" : decoded.email},
+                        {"user": {id: user.id, username: user.username}},
                         process.env["ACCESS_TOKEN_SECRET"],
                         {expiresIn: "10m"}
                     );

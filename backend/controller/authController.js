@@ -24,12 +24,12 @@ const login = async (req, res) => {
             if(isMatch){
                 //create jwt token
                 const accessToken = jwt.sign(
-                    {"user" : selectedUser.id},
+                    {"user" : {id: selectedUser.id, username: selectedUser.username}},
                     process.env["ACCESS_TOKEN_SECRET"],
                     {expiresIn: "10m"}
                 );
                 const refreshToken = jwt.sign(
-                    {"user": selectedUser.id},
+                    {"user": {id: selectedUser.id, username: selectedUser.username}},
                     process.env["REFRESH_TOKEN_SECRET"],
                     {expiresIn: "1d"}
                 );
@@ -64,7 +64,10 @@ const checkAuthentication = (req, res) => {
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
             if (err) return res.status(403).json({"authenticated": false}); //invalid token
-            req.user = decoded.id
+            req.user = {
+                id: decoded.user.id,
+                username: decoded.user.username
+            }
             return res.status(200).json({"authenticated": true});
         }
     )

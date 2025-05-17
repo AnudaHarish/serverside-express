@@ -9,7 +9,7 @@ const createBlogPost = async (req,res) => {
         const {name, flag, capital, currency, region} = countryData
         const {title, content, date_of_visit} = blogPostData;
         //extract user id
-        const user_id = req.user;
+        const user_id = req?.user?.id;
         //check for required fields
         if(!user_id){
             return res.status(401).json({error: "User not authenticated"});
@@ -117,7 +117,7 @@ const getBlogPostById = async (req, res) => {
 const getAllBlogPostForUser = async (req,res) => {
     try{
         //get user_id
-        const user_id = req.user;
+        const user_id = req?.user?.id;
         if(!user_id){
             res.status(401).json({error: "User not authenticated"});
         }

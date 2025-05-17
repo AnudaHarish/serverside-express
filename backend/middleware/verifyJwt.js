@@ -11,7 +11,10 @@ const verifyJwt = (req, res, next) => {
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
             if (err) return res.status(403).send('Unauthorized'); //invalid token
-            req.user = decoded.id
+            req.user = {
+                id: decoded.user.id,
+                username: decoded.user.username
+            }
             next();
         }
     )
