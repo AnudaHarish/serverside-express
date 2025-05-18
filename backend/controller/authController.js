@@ -17,11 +17,11 @@ const login = async (req, res) => {
             const selectedUser = allUsers.find(user => user.email === email);
             console.log(selectedUser);
             if(!selectedUser) return res.status(400).json({"message": "User not found"});
-
             //check password
             const isMatch = await bcrypt.compare(psw, selectedUser.password);
-            console.log("isMatch", isMatch);
             if(isMatch){
+                //delete previously created refresh tokens
+                await RefreshDAO.deleteByUser(selectedUser.id);
                 //create jwt token
                 const accessToken = jwt.sign(
                     {"user" : {id: selectedUser.id, username: selectedUser.username}},
@@ -44,7 +44,6 @@ const login = async (req, res) => {
         }else{
             return res.status(401).json({"message": "User not found"});
         }
-
     }catch (err){
         console.log("Error was occurred: ", err);
         return res.status(500).json({
@@ -54,7 +53,7 @@ const login = async (req, res) => {
     }
 }
 
-const checkAuthentication = (req, res) => {
+const checkAuthentication = async (req, res) => {
     const authHeader = req.headers['authorization'];
     if(!authHeader) return res.status(401).json({"authenticated": false});
     console.log(authHeader);
@@ -63,7 +62,10 @@ const checkAuthentication = (req, res) => {
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-            if (err) return res.status(403).json({"authenticated": false}); //invalid token
+            if (err) {
+                //invalid token
+                return res.status(403).json({"authenticated": false});
+            }
             req.user = {
                 id: decoded.user.id,
                 username: decoded.user.username

@@ -1,19 +1,27 @@
 const UserReactionDAO = require("../dao/blogPostLikesDAO");
+const BlogPostDAO = require("../dao/blog_postDAO");
 
 //like or dislike a blog post
 const addingReaction = async (req, res) => {
     try{
         //get user id
         const user_id = req.user?.id;
+        const blog_post_id = req.params.id;
         //get blog_post_id, is_like
-        const {blog_post_id, is_like} = req.body;
-
+        const {is_like} = req.body;
         //validate inputs
         if(!user_id){
             return res.status(401).json({error: "User not authorized"});
         }
         if(!blog_post_id || typeof(is_like) !== "number" || (is_like !== 0 && is_like !== 1) ){
             return res.status(400).json({error: "blog_post_id and is_like is required"});
+        }
+        const postData = await BlogPostDAO.getById(blog_post_id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
         }
         //add the user reaction
         const index = await UserReactionDAO.like(blog_post_id, user_id, is_like);
@@ -46,10 +54,20 @@ const removeReaction = async (req, res) => {
         if(!blog_post_id){
             return res.status(400).json({error: "blog_post_id is required"});
         }
+        const postData = await BlogPostDAO.getById(blog_post_id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
+        }
         const change = await UserReactionDAO.removeReaction(blog_post_id, user_id);
         if(!change){
             return res.status(404).json({error: "Error in removing the reaction"});
         }
+        return res.status(204).json({
+            message: "Successfully remove the reaction",
+        });
     }catch (err) {
         console.error("Error in removing the reaction", err);
         return res.status(500).json({error: "Internal server error"});
@@ -112,6 +130,41 @@ const getReaction = async (req, res) => {
         console.error("Error in getaReaction", err);
         return res.status(500).json({error: "Internal server error"});
     }
+};
+
+const updateReaction = async (req, res) => {
+    try{
+        //get user id
+        const user_id = req.user?.id;
+        //get blog_post_id, is_like
+        const blog_post_id = req.params?.id;
+        const { is_like } = req.body;
+        //validate inputs
+        if(!user_id){
+            return res.status(401).json({error: "User not authorized"});
+        }
+        if(!blog_post_id || typeof(is_like) !== "number" || (is_like !== 0 && is_like !== 1)){
+            return res.status(400).json({error: "blog_post_id & is_like is required"});
+        }
+        const postData = await BlogPostDAO.getById(blog_post_id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
+        }
+        const change = await UserReactionDAO.updateReaction(blog_post_id, user_id, is_like);
+        if(!change){
+            return res.status(404).json({error: "Error in update the reaction"});
+        }
+        return res.status(200).json({
+            message: "Successfully updated the reaction",
+        });
+    }catch (err) {
+        console.error("Error in updating the reaction", err);
+        return res.status(500).json({error: "Internal server error"});
+    }
 }
 
-module.exports = {addingReaction, removeReaction, getTotalDislikes, getTotalLikes, getReaction};
+
+module.exports = {addingReaction, removeReaction, getTotalDislikes, getTotalLikes, getReaction, updateReaction};

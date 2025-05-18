@@ -1,12 +1,13 @@
 const BlogPostDAO = require("../dao/blog_postDAO");
 const CountryDAO = require("../dao/countryDAO");
+const UserReactionDAO = require("../dao/blogPostLikesDAO");
 
 //create a blog post
 const createBlogPost = async (req,res) => {
     try{
         //extract blog post details
         const {countryData, blogPostData} = req.body;
-        const {name, flag, capital, currency, region} = countryData
+        const {name, flag, capital, currency, region, languages} = countryData
         const {title, content, date_of_visit} = blogPostData;
         //extract user id
         const user_id = req?.user?.id;
@@ -15,21 +16,29 @@ const createBlogPost = async (req,res) => {
             return res.status(401).json({error: "User not authenticated"});
         }
         if((!title || !content || !date_of_visit)||
-            (!name || !flag || !currency || !capital || !region)){
+            (!name || !flag || !currency || !capital || !region || languages.length === 0)){
             return res.status(400).json({error: "Missing required fields"});
         }
+        //change to json string
+        countryData.languages = JSON.stringify(languages);
         //save country data
-        const country_id = await CountryDAO.create(countryData);
+        let country_id = await CountryDAO.create(countryData);
         if(!country_id){
-            return res.status(500).json({error: "Error in saving country info"});
+            const data = await  CountryDAO.getByName(name);
+            console.log(data);
+            if(!data){
+                return res.status(404).json({error: "Could not find country"});
+            }
+            country_id = data.id;
         }
+        console.log(country_id);
         //create blog post
         const blogPostId = await BlogPostDAO.createBlog({
             user_id,
             title,
             content,
             country_id,
-            date_of_visit
+            date_of_visit,
         });
         //return success with new blog postId
         return res.status(201).json({
@@ -37,7 +46,7 @@ const createBlogPost = async (req,res) => {
                 blogPostId: blogPostId,
             }
         );
-    }catch (err){
+    }catch(err){
         console.error("Error creating blogPost", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -48,16 +57,30 @@ const getAllBlogPosts = async (req,res) => {
     try{
         const posts = await BlogPostDAO.getAll();
         const countries = await CountryDAO.getAll();
+        //get likes for the post
+        const likes = await UserReactionDAO.getLikedPosts() || [];
+        const dislikes = await UserReactionDAO.getDislikedPosts() || [];
+        let reactionsArr = [];
+        //get logged user
+        const user_id = req?.user?.id || null;
+        if(user_id){
+            reactionsArr = [...likes, ...dislikes];
+        }
         //creating a key value pair map
         const countriesMap = new Map(countries.map((c) => [c.id, c]));
         posts.forEach((post) => {
             post.country = countriesMap.get(post.country_id);
+            post.likes = likes.filter(reaction => reaction.blog_post_id === post.id).length || 0;
+            post.dislikes = dislikes.filter(reaction => reaction.blog_post_id === post.id).length || 0;
+            let reaction = reactionsArr.find(reaction => (reaction.blog_post_id === post.id && reaction.user_id === user_id));
+            post.reaction = reaction ? reaction.is_like : null;
         });
+        //get like for the blog
         return res.status(200).json({
             message: "Blog posts successfully",
             payload: posts
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog posts", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -69,9 +92,21 @@ const updateBlogPost = async (req,res) => {
         //get data from the req
         const {title, content} = req.body;
         const id = req.params.id;
+        const user_id = req.user.id;
         //valid required fields
+        if(!user_id){
+            return res.status(401).json({error: "user not authorized"});
+        }
         if(!title || !content || !id){
             res.status(400).json({error: "Missing required fields"});
+        }
+        //check the user has the permission to update
+        const postData = await BlogPostDAO.getById(id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
         }
         const change = await BlogPostDAO.updateBlog(id,{
             title,
@@ -83,7 +118,7 @@ const updateBlogPost = async (req,res) => {
         return res.status(200).json({
             message: "Blog post updated successfully"
         });
-    }catch (err){
+    }catch(err){
         console.error("Error updating blog post", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -107,7 +142,7 @@ const getBlogPostById = async (req, res) => {
             message: "Retrieve log post successfully",
             payload: post,
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog post", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -159,7 +194,7 @@ const getAllBlogPostsForCountry = async (req,res) => {
             message: "Blog post retrieved successfully",
             payload: posts,
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog post for country", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -168,8 +203,20 @@ const getAllBlogPostsForCountry = async (req,res) => {
 const deleteBlogPost = async (req,res) => {
     try{
         const id = req.params.id;
+        const user_id = req?.user?.id;
+        if(!user_id){
+            res.status(401).json({error: "User not authenticated"});
+        }
         if(!id){
             res.status(400).json({error: "Missing required fields"});
+        }
+        //check the user has the permission to update
+        const postData = await BlogPostDAO.getById(id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
         }
         const change = await BlogPostDAO.delete(id);
         if(!change){
@@ -178,10 +225,109 @@ const deleteBlogPost = async (req,res) => {
         return res.status(204).json({
             message: "Blog post deleted successfully",
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog post for user", err);
         return res.status(500).json({error: "Internal server error"});
     }
 };
 
-module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost}
+//retrieve query parameters with defaults
+//for filtering: country and username
+//for pagination: page and size
+//for sort: sort can be "newest", "mostLiked", "mostCommented"
+const searchBlogPost = async (req, res) => {
+    try{
+        const {country = "", username = "", page = 1, size = 10, sort = "newest"} = req.query;
+        const limit = parseInt(size);
+        const offset = (parseInt(page) - 1) * limit;
+
+        //prepare search parameters for sql like
+        const countryParam = `%${country}`;
+        const usernameParam = `%${username}`;
+
+        //building the base query by joining the blog posts, country, users
+        //add sub queries returning the like and comment count
+        let baseQuery = `
+            SELECT
+                bp.id,
+                bp.title,
+                bp.created_at,
+                u.username AS author,
+                c.name AS country,
+                (SELECT COUNT(*) FROM blog_post_likes l WHERE l.blog_post_id = bp.id) AS likes_count,
+                (SELECT COUNT(*) FROM blog_post_comments cm WHERE cm.blog_post_id = bp.id) AS comments_count
+            FROM blog_posts bp
+            JOIN users u ON bp.user_id = u.id
+            JOIN countries c ON bp.country_id = c.id
+            WHERE 1=1       
+        `;
+
+        const params = [];
+        if(country){
+            baseQuery += ` AND c.name LIKE ?`;
+            params.push(countryParam);
+        }
+        if(username){
+            baseQuery += ` AND u.username LIKE ?`;
+            params.push(usernameParam);
+        }
+
+        //build the order by clause based on the sort option
+        let orderClause = "";
+        if(sort === 'mostLiked'){
+            orderClause = ` ORDER BY likes_count DESC`;
+        }else if(sort === 'mostCommented'){
+            orderClause = ` ORDER BY comments_count DESC`;
+        }else{
+            orderClause = ` ORDER BY bp.created_at DESC`;
+        }
+
+        //append the pagination clause
+        const limitClause = ` LIMIT ? OFFSET ?`;
+        params.push(limit, offset);
+
+        //the final query with dynamic filtering, sorting and pagination
+        const finalQuery = baseQuery + orderClause + limitClause;
+
+        //execute query
+        const posts = await BlogPostDAO.queryOne(finalQuery, params);
+
+        //get total count for pagination
+        let countQuery = `
+            SELECT COUNT(*) AS total 
+            FROM blog_posts bp
+            JOIN users u ON bp.user_id = u.id
+            JOIN countries c ON bp.country_id = c.id
+            WHERE 1=1
+        `;
+        const countParams = [];
+        if(country){
+            countQuery += ` AND c.name LIKE ?`;
+            countParams.push(countryParam);
+        }
+        if(username){
+            countQuery += ` AND u.username LIKE ?`;
+            countParams.push(usernameParam);
+        }
+
+        const countResults = await BlogPostDAO.queryOne(countQuery, countParams);
+        const total = countResults.total;
+        const totalPages = Math.ceil(total / limit);
+
+        return res.status(200).json({
+            payload: posts,
+            metadata: {
+                pages: parseInt(page),
+                size: limit,
+                total,
+                totalPages,
+                sort
+            }
+        })
+    }catch(err){
+        console.error("Error searching blog post", err);
+        return res.status(500).json({error: "Internal server error"});
+    }
+}
+
+module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost, searchBlogPost}

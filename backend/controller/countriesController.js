@@ -8,7 +8,7 @@ const handleCountriesData = async (req, res) => {
     console.log(name);
     try{
         const countryData = await fetchCountries.fetchCountries(name);
-        if(!countryData || !countryData.length) return res.status(404).json({"message": "Country not found"});{}
+        if(!countryData || !countryData.length) return res.status(404).json({"message": "Country not found"});
         res.json(countryData);
     }catch(err){
         console.error("Error in fetchCountries", err);

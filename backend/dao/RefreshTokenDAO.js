@@ -49,6 +49,19 @@ class RefreshTokenDAO {
         });
     }
 
+    deleteByUser(user_id){
+        return new Promise((resolve, reject) => {
+            db.run(
+                "DELETE FROM refresh_tokens WHERE user_id = ?",
+                [user_id],
+                function (err) {
+                    if (err) return reject(err);
+                    else resolve(this.changes);
+                }
+            );
+        });
+    }
+
     deleteExpiredTokens(){
         return new Promise((resolve, reject) => {
             db.run(

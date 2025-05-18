@@ -28,7 +28,7 @@ const getAllCountries = async () => {
     try {
         const regions = ['africa', 'americas', 'asia', 'europe', 'oceania'];
         const results = await Promise.allSettled(regions.map(fetchCountriesByRegion));
-        //if result is fulfilled it return an flatten array
+        //if result is fulfilled it return a flatten array
         const countries = results.flatMap(r =>
             r.status === 'fulfilled' ? r.value : []
         ).map(country => ({
@@ -62,7 +62,8 @@ const fetchWithRetry = async (url, retries = 3) => {
                 currency: Object.keys(country?.currencies || {})[0],
                 capital: country?.capital?.[0] || "N/A",
                 languages: country?.languages ? Object.values(country.languages) : [],
-                flag: country?.flags?.png || country?.flags?.svg
+                flag: country?.flags?.png || country?.flags?.svg,
+                region: country?.region
             }));
         } catch (err) {
             console.error(`Fetch attempt ${attempt + 1} failed: ${err.message}`);

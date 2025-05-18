@@ -32,7 +32,8 @@ function initialise() {
             flag TEXT,
             currency TEXT,
             capital TEXT,
-            region TEXT
+            region TEXT,
+            languages TEXT 
         );
         CREATE TABLE IF NOT EXISTS blog_posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,9 +60,18 @@ function initialise() {
             user_id INTEGER NOT NULL,
             is_like BOOLEAN NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(blog_post_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY(blog_post_id) REFERENCES blog_posts(id) ON DELETE CASCADE,
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
             UNIQUE (blog_post_id, user_id)
+        );
+        CREATE TABLE IF NOT EXISTS blog_post_comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            blog_post_id  INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            comment TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(blog_post_id) REFERENCES blog_posts(id) ON DELETE CASCADE,
+            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
     `,(err) =>{
         if(err){

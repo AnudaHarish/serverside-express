@@ -3,17 +3,15 @@ const router = express.Router();
 const ReactionController = require('../controller/userReactionController');
 
 //add user reaction for a blog
-router.post('/add', ReactionController.addingReaction);
-
+router.post('/add/:id', ReactionController.addingReaction);
 //removing a reaction
 router.delete('/remove/:id', ReactionController.removeReaction);
-
+//updating the reaction
+router.put('/update/:id', ReactionController.updateReaction);
 //get total like for a blog
 router.get('/likes/:id', ReactionController.getTotalLikes);
-
 //get total dislike for a blog
 router.get('/dislikes/:id', ReactionController.getTotalLikes);
-
 //get the reaction of the user for a specific blog
 router.get('/reaction/:id', ReactionController.getTotalDislikes);
 

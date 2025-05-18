@@ -6,7 +6,7 @@ class BlogPostLikesDAO {
     like(blog_post_id, user_id, is_like){
         return new Promise((resolve, reject) =>{
             db.run(
-                "INSERT INTO blog_post_likes (blog_post_id, user_id, is_like) WHERE VALUES(?,?,?)",
+                "INSERT INTO blog_post_likes (blog_post_id, user_id, is_like) VALUES(?,?,?)",
                 [blog_post_id, user_id, is_like],
                 function(err){
                     if(err) return reject(err);
@@ -70,6 +70,44 @@ class BlogPostLikesDAO {
                 }
             );
         })
+    }
+
+    getLikedPosts(){
+        return new Promise((resolve, reject) =>{
+            db.all(
+                "SELECT * FROM blog_post_likes WHERE is_like = 1",
+                (err, rows) => {
+                    if(err) return reject(err);
+                    else resolve(rows);
+                }
+            );
+        });
+    }
+
+    getDislikedPosts(){
+        return new Promise((resolve, reject) =>{
+            db.all(
+                "SELECT * FROM blog_post_likes WHERE is_like = 0",
+                (err, rows) => {
+                    if(err) return reject(err);
+                    else resolve(rows);
+                }
+            );
+        });
+    }
+
+    updateReaction(blog_post_id,user_id, is_like){
+        console.log("is_like", is_like);
+        return new Promise((resolve, reject) =>{
+            db.run(
+                "UPDATE blog_post_likes SET is_like = ? WHERE blog_post_id = ? AND user_id = ?",
+                [ is_like, blog_post_id, user_id],
+                function(err){
+                    if(err) return reject(err);
+                    else resolve(this.changes);
+                }
+            );
+        });
     }
 }
 
