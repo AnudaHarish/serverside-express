@@ -43,11 +43,14 @@ app.use("/api/refresh", require("./routes/refreshToken"));
 app.use("/api/logout", require("./routes/logout"));
 
 app.use(verifyJwt);
+//jwt protected routes
 app.get("/api", (req,res) => {
     res.status(200).json({"message":"default path"});
 });
 
+app.use("/api/pBlog", require("./routes/blogPost"));
 app.use("/api/countries", require("./routes/countries"));
+app.use("/api/react", require("./routes/userReaction"));
 
 // app.all("*", (req,res) => {
 //     res.status(404)

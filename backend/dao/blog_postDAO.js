@@ -39,10 +39,11 @@ class BlogPostDAO {
 
     //create new blog post
     createBlog(blogData){
+        console.log(blogData);
         const {user_id, title, content, country_id, date_of_visit} = blogData;
         return new Promise((resolve, reject) => {
             db.run(
-                "INSERT INTO blog_posts (user_id, title, content, country_id, date_of_visit) VALUES (?,?,?,?.?)",
+                "INSERT INTO blog_posts (user_id, title, content, country_id, date_of_visit) VALUES (?,?,?,?,?)",
                 [user_id, title, content, country_id, date_of_visit],
                 function(err){
                     if (err) return reject(err);

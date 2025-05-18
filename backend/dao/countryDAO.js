@@ -3,11 +3,12 @@ const db = require("../config/databaseConfig");
 class CountryDAO {
     //create country records
     create(countryData) {
-        const {name, flag, currency, capital, region} = countryData;
+        console.log(countryData);
+        const {name, flag, currency, capital, region, languages} = countryData;
         return new Promise((resolve, reject) => {
             db.run(
-                "INSERT ON IGNORE countries (name, flag, currency, capital, region) VALUES (?,?,?,?,?)",
-                [name, flag, currency, capital, region],
+                "INSERT OR IGNORE INTO countries (name, flag, currency, capital, region, languages) VALUES (?,?,?,?,?,?)",
+                [name, flag, currency, capital, region, languages],
                 function(err) {
                     if (err) return reject(err);
                     else resolve(this.lastID);

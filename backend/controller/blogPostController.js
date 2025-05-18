@@ -1,12 +1,13 @@
 const BlogPostDAO = require("../dao/blog_postDAO");
 const CountryDAO = require("../dao/countryDAO");
+const UserReactionDAO = require("../dao/blogPostLikesDAO");
 
 //create a blog post
 const createBlogPost = async (req,res) => {
     try{
         //extract blog post details
         const {countryData, blogPostData} = req.body;
-        const {name, flag, capital, currency, region} = countryData
+        const {name, flag, capital, currency, region, languages} = countryData
         const {title, content, date_of_visit} = blogPostData;
         //extract user id
         const user_id = req?.user?.id;
@@ -15,21 +16,29 @@ const createBlogPost = async (req,res) => {
             return res.status(401).json({error: "User not authenticated"});
         }
         if((!title || !content || !date_of_visit)||
-            (!name || !flag || !currency || !capital || !region)){
+            (!name || !flag || !currency || !capital || !region || languages.length === 0)){
             return res.status(400).json({error: "Missing required fields"});
         }
+        //change to json string
+        countryData.languages = JSON.stringify(languages);
         //save country data
-        const country_id = await CountryDAO.create(countryData);
+        let country_id = await CountryDAO.create(countryData);
         if(!country_id){
-            return res.status(500).json({error: "Error in saving country info"});
+            const data = await  CountryDAO.getByName(name);
+            console.log(data);
+            if(!data){
+                return res.status(404).json({error: "Could not find country"});
+            }
+            country_id = data.id;
         }
+        console.log(country_id);
         //create blog post
         const blogPostId = await BlogPostDAO.createBlog({
             user_id,
             title,
             content,
             country_id,
-            date_of_visit
+            date_of_visit,
         });
         //return success with new blog postId
         return res.status(201).json({
@@ -48,11 +57,25 @@ const getAllBlogPosts = async (req,res) => {
     try{
         const posts = await BlogPostDAO.getAll();
         const countries = await CountryDAO.getAll();
+        //get likes for the post
+        const likes = await UserReactionDAO.getLikedPosts() || [];
+        const dislikes = await UserReactionDAO.getDislikedPosts() || [];
+        let reactionsArr = [];
+        //get logged user
+        const user_id = req?.user?.id || null;
+        if(user_id){
+            reactionsArr = [...likes, ...dislikes];
+        }
         //creating a key value pair map
         const countriesMap = new Map(countries.map((c) => [c.id, c]));
         posts.forEach((post) => {
             post.country = countriesMap.get(post.country_id);
+            post.likes = likes.filter(reaction => reaction.blog_post_id === post.id).length || 0;
+            post.dislikes = dislikes.filter(reaction => reaction.blog_post_id === post.id).length || 0;
+            let reaction = reactionsArr.find(reaction => (reaction.blog_post_id === post.id && reaction.user_id === user_id));
+            post.reaction = reaction ? reaction.is_like : null;
         });
+        //get like for the blog
         return res.status(200).json({
             message: "Blog posts successfully",
             payload: posts
@@ -69,9 +92,21 @@ const updateBlogPost = async (req,res) => {
         //get data from the req
         const {title, content} = req.body;
         const id = req.params.id;
+        const user_id = req.user.id;
         //valid required fields
+        if(!user_id){
+            return res.status(401).json({error: "user not authorized"});
+        }
         if(!title || !content || !id){
             res.status(400).json({error: "Missing required fields"});
+        }
+        //check the user has the permission to update
+        const postData = await BlogPostDAO.getById(id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
         }
         const change = await BlogPostDAO.updateBlog(id,{
             title,
@@ -168,8 +203,20 @@ const getAllBlogPostsForCountry = async (req,res) => {
 const deleteBlogPost = async (req,res) => {
     try{
         const id = req.params.id;
+        const user_id = req?.user?.id;
+        if(!user_id){
+            res.status(401).json({error: "User not authenticated"});
+        }
         if(!id){
             res.status(400).json({error: "Missing required fields"});
+        }
+        //check the user has the permission to update
+        const postData = await BlogPostDAO.getById(id);
+        if(!postData){
+            return res.status(404).json({error: "Could not find post"});
+        }
+        if(postData.user_id !== user_id){
+            return res.status(403).json({error: "User has not the permission"});
         }
         const change = await BlogPostDAO.delete(id);
         if(!change){
