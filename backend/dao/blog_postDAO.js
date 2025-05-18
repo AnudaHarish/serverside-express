@@ -91,6 +91,20 @@ class BlogPostDAO {
             });
         });
     }
+
+    //dynamic filter
+    queryOne(query, params){
+        return new Promise((resolve, reject) => {
+            db.get(
+                query,
+                params,
+                (err, row) => {
+                    if (err) return reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+    }
 }
 
 module.exports = new BlogPostDAO;

@@ -41,6 +41,7 @@ app.use("/api/login", require("./routes/userLogin"));
 
 app.use("/api/refresh", require("./routes/refreshToken"));
 app.use("/api/logout", require("./routes/logout"));
+app.use("/api/defaults", require("./routes/unProtectedRouts"));
 
 app.use(verifyJwt);
 //jwt protected routes

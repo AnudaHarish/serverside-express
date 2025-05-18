@@ -46,7 +46,7 @@ const createBlogPost = async (req,res) => {
                 blogPostId: blogPostId,
             }
         );
-    }catch (err){
+    }catch(err){
         console.error("Error creating blogPost", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -80,7 +80,7 @@ const getAllBlogPosts = async (req,res) => {
             message: "Blog posts successfully",
             payload: posts
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog posts", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -118,7 +118,7 @@ const updateBlogPost = async (req,res) => {
         return res.status(200).json({
             message: "Blog post updated successfully"
         });
-    }catch (err){
+    }catch(err){
         console.error("Error updating blog post", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -142,7 +142,7 @@ const getBlogPostById = async (req, res) => {
             message: "Retrieve log post successfully",
             payload: post,
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog post", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -194,7 +194,7 @@ const getAllBlogPostsForCountry = async (req,res) => {
             message: "Blog post retrieved successfully",
             payload: posts,
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog post for country", err);
         return res.status(500).json({error: "Internal server error"});
     }
@@ -225,10 +225,109 @@ const deleteBlogPost = async (req,res) => {
         return res.status(204).json({
             message: "Blog post deleted successfully",
         });
-    }catch (err){
+    }catch(err){
         console.error("Error getting blog post for user", err);
         return res.status(500).json({error: "Internal server error"});
     }
 };
 
-module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost}
+//retrieve query parameters with defaults
+//for filtering: country and username
+//for pagination: page and size
+//for sort: sort can be "newest", "mostLiked", "mostCommented"
+const searchBlogPost = async (req, res) => {
+    try{
+        const {country = "", username = "", page = 1, size = 10, sort = "newest"} = req.query;
+        const limit = parseInt(size);
+        const offset = (parseInt(page) - 1) * limit;
+
+        //prepare search parameters for sql like
+        const countryParam = `%${country}`;
+        const usernameParam = `%${username}`;
+
+        //building the base query by joining the blog posts, country, users
+        //add sub queries returning the like and comment count
+        let baseQuery = `
+            SELECT
+                bp.id,
+                bp.title,
+                bp.created_at,
+                u.username AS author,
+                c.name AS country,
+                (SELECT COUNT(*) FROM blog_post_likes l WHERE l.blog_post_id = bp.id) AS likes_count,
+                (SELECT COUNT(*) FROM blog_post_comments cm WHERE cm.blog_post_id = bp.id) AS comments_count
+            FROM blog_posts bp
+            JOIN users u ON bp.user_id = u.id
+            JOIN countries c ON bp.country_id = c.id
+            WHERE 1=1       
+        `;
+
+        const params = [];
+        if(country){
+            baseQuery += ` AND c.name LIKE ?`;
+            params.push(countryParam);
+        }
+        if(username){
+            baseQuery += ` AND u.username LIKE ?`;
+            params.push(usernameParam);
+        }
+
+        //build the order by clause based on the sort option
+        let orderClause = "";
+        if(sort === 'mostLiked'){
+            orderClause = ` ORDER BY likes_count DESC`;
+        }else if(sort === 'mostCommented'){
+            orderClause = ` ORDER BY comments_count DESC`;
+        }else{
+            orderClause = ` ORDER BY bp.created_at DESC`;
+        }
+
+        //append the pagination clause
+        const limitClause = ` LIMIT ? OFFSET ?`;
+        params.push(limit, offset);
+
+        //the final query with dynamic filtering, sorting and pagination
+        const finalQuery = baseQuery + orderClause + limitClause;
+
+        //execute query
+        const posts = await BlogPostDAO.queryOne(finalQuery, params);
+
+        //get total count for pagination
+        let countQuery = `
+            SELECT COUNT(*) AS total 
+            FROM blog_posts bp
+            JOIN users u ON bp.user_id = u.id
+            JOIN countries c ON bp.country_id = c.id
+            WHERE 1=1
+        `;
+        const countParams = [];
+        if(country){
+            countQuery += ` AND c.name LIKE ?`;
+            countParams.push(countryParam);
+        }
+        if(username){
+            countQuery += ` AND u.username LIKE ?`;
+            countParams.push(usernameParam);
+        }
+
+        const countResults = await BlogPostDAO.queryOne(countQuery, countParams);
+        const total = countResults.total;
+        const totalPages = Math.ceil(total / limit);
+
+        return res.status(200).json({
+            payload: posts,
+            metadata: {
+                pages: parseInt(page),
+                size: limit,
+                total,
+                totalPages,
+                sort
+            }
+        })
+    }catch(err){
+        console.error("Error searching blog post", err);
+        return res.status(500).json({error: "Internal server error"});
+    }
+}
+
+module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost, searchBlogPost}
