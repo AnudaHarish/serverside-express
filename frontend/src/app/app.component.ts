@@ -3,7 +3,7 @@ import {NbMenuItem, NbMenuService, NbSidebarService} from "@nebular/theme";
 import {Router} from "@angular/router";
 import {AuthService} from "./service/auth.service";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
-import {filter, map} from "rxjs";
+import {BehaviorSubject, filter, map} from "rxjs";
 import {SessionStorageService} from "./service/session-storage.service";
 
 @Component({
@@ -40,9 +40,9 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.isLoggIn = this.sessionStorage.checkUser();
-    this.username = sessionStorage.getItem("travelT_username")||'Login/Register';
-    console.log("this.isLoggIn", this.isLoggIn);
+    this.sessionStorage.sessionUpdate$.subscribe((value) => {
+      this.checkUserInfo();
+    });
     this.nbMenuService.onItemClick()
       .pipe(
         filter(({ tag }) => tag === 'my-context-menu'),
@@ -87,6 +87,11 @@ export class AppComponent implements OnInit {
 
   login(){
     this.router.navigateByUrl('/login');
+  }
+
+  checkUserInfo(){
+    this.isLoggIn = this.sessionStorage.checkUser();
+    this.username = this.sessionStorage.getItem("travelT_username")||'Login/Register';
   }
 
 }

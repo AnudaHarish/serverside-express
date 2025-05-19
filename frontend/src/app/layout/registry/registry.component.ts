@@ -12,7 +12,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 })
 export class RegistryComponent implements OnInit {
   registerObj: AuthRequest = {
-    name : '',
+    email : '',
     psw : ''
   }
   position = NbGlobalPhysicalPosition
@@ -29,7 +29,7 @@ export class RegistryComponent implements OnInit {
   }
 
   onSubmit(){
-    if(!this.registerObj.name || !this.registerObj.psw){
+    if(!this.registerObj.email || !this.registerObj.psw){
       this.showToast("danger","Username and Password required", "Error");
       return;
     }

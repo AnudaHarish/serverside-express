@@ -22,7 +22,7 @@
 <!--      </div>-->
     </div>
   </nb-layout-header>
-  <nb-sidebar>
+  <nb-sidebar *ngIf="isLoggIn">
     <!-- Add sidebar header -->
     <div class="sidebar-header">
       <nb-card class="sidebar-user-card">

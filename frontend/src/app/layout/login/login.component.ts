@@ -4,6 +4,7 @@ import {AuthService} from "../../service/auth.service";
 import {AuthRequest,AuthResponse} from "../../shared/models/auth.request";
 import {AuthInterceptor} from "../../interceptors/auth.interceptor";
 import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
+import {SessionStorageService} from "../../service/session-storage.service";
 
 
 @Component({
@@ -13,7 +14,7 @@ import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 })
 export class LoginComponent implements OnInit {
   loginObj: AuthRequest = {
-    "name": '',
+    "email": '',
     "psw": ''
   }
   position = NbGlobalPhysicalPosition;
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private toastrService: NbToastrService,
+    private sessionStorage: SessionStorageService,
   ) { }
 
   ngOnInit(): void {
@@ -34,15 +36,21 @@ export class LoginComponent implements OnInit {
       this.authService.login(this.loginObj).subscribe({
         error: (err) => {
           console.log("Error", err);
-          this.showToast("danger", "Username and Password required", "Error");
+          this.showToast("danger", "Email and Password required", "Error");
         },
         next: (res) => {
-          console.log(res);
-          AuthInterceptor.accessToken = res?.accessToken;
+          const token = res?.accessToken;
+          AuthInterceptor.accessToken = token;
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          console.log(payload?.user?.id);
+          if(!payload || !payload?.user){
+            return console.error("Error in authentication");
+          }
+          this.sessionStorage.setKey("travelT_id", payload.user?.id);
+          this.sessionStorage.setKey("travelT_username", payload.user?.username);
           this.router.navigateByUrl('/dashboard');
         }
       })
-
   }
 
   showToast(status: any, message: string, ref: string) {
