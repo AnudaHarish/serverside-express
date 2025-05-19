@@ -5,12 +5,12 @@ import { AppComponent } from './app.component';
 
 import {
   NbAutocompleteModule,
-  NbButtonModule, NbCardModule, NbIconModule,
+  NbButtonModule, NbCardModule, NbContextMenuModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
   NbMenuModule,
   NbSidebarModule,
-  NbThemeModule, NbToastrModule
+  NbThemeModule, NbToastrModule, NbUserModule
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -42,7 +42,9 @@ import {AuthModule} from "./layout/auth/auth.module";
     NbToastrModule.forRoot(),
     NbAutocompleteModule,
     NbCardModule,
-    NbIconModule
+    NbIconModule,
+    NbUserModule,
+    NbContextMenuModule
   ],
   providers: [
     {

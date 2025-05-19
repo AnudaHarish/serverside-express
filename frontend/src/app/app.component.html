@@ -8,12 +8,18 @@
         </button>
       </div>
 
-      <div>
-        <button nbButton status="danger" (click)="logout()">
-          <nb-icon icon="log-out-outline"></nb-icon>
-          Logout
-        </button>
-      </div>
+      <nb-user  name= "{{username}}"
+                title= ""
+                [nbContextMenu]="isLoggIn ? items2 : items"
+                nbContextMenuTag="my-context-menu">
+      </nb-user>
+
+<!--      <div>-->
+<!--        <button nbButton status="primary" (click)="login()">-->
+<!--          <nb-icon icon="log-out-outline"></nb-icon>-->
+<!--          login-->
+<!--        </button>-->
+<!--      </div>-->
     </div>
   </nb-layout-header>
   <nb-sidebar>
@@ -22,7 +28,7 @@
       <nb-card class="sidebar-user-card">
         <nb-card-body>
           <div class="user-info">
-            <h5 class="user-name">CountryInfo</h5> <!-- Bind to your user data -->
+            <h5 class="user-name">TravelTales</h5> <!-- Bind to your user data -->
           </div>
         </nb-card-body>
       </nb-card>
@@ -31,9 +37,7 @@
   </nb-sidebar>
   <nb-layout-column class="colored-column-basic">
     <router-outlet></router-outlet>
-
   </nb-layout-column>
-
   <nb-layout-footer fixed>
     <!-- Insert footer here -->
   </nb-layout-footer>
