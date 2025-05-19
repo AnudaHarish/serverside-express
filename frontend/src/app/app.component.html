@@ -12,8 +12,8 @@
       </div>
     </div>
   </nb-layout-header>
-  <nb-sidebar *ngIf="isLoggIn">
-    <div class="toggle-btn">
+  <nb-sidebar *ngIf="isLoggIn" class="custom-sidebar">
+    <div class="toggle-btn-container">
       <button nbButton ghost (click)="toggleSidebar()">
         <nb-icon icon="menu-outline"></nb-icon>
       </button>

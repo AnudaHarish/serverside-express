@@ -83,4 +83,15 @@ export class AuthService {
       })
     );
   }
+
+  refreshToken(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/refresh`).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError(() => {
+        return of(false);
+      })
+    )
+  }
 }

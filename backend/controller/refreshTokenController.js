@@ -37,7 +37,6 @@ const handleRefreshToken = async (req, res) => {
         }else{
             return res.status(401).json({"message": "User not found"});
         }
-
     }catch (err){
         console.log("Error was occurred: ", err);
         return res.status(500).json({

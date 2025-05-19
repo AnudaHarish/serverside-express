@@ -42,8 +42,8 @@ const verifyJwt = async (req, res, next) => {
         };
         next();
     }catch(err){
-        console.error("Error in verifyJwt", err);
-        return res.status(500).send("Internal server error");
+        console.error("Error in verifyJwt", err.error);
+        return res.status(500).send(err.error);
     }
 }
 

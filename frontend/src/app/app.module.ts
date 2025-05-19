@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 
 import {
   NbAutocompleteModule,
-  NbButtonModule, NbCardModule, NbContextMenuModule, NbIconModule,
+  NbButtonModule, NbCardModule, NbContextMenuModule, NbDialogModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
   NbMenuModule,
@@ -19,10 +19,13 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
 import { MainModule } from './layout/main/main.module';
 import {AuthModule} from "./layout/auth/auth.module";
+import { SessionExpiredComponent } from './layout/popup/session-expired/session-expired.component';
+import {config} from "rxjs";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SessionExpiredComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,8 @@ import {AuthModule} from "./layout/auth/auth.module";
     NbCardModule,
     NbIconModule,
     NbUserModule,
-    NbContextMenuModule
+    NbContextMenuModule,
+    NbDialogModule.forRoot(),
   ],
   providers: [
     {

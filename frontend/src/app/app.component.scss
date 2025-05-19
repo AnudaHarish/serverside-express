@@ -29,6 +29,16 @@
   }
 }
 
-.toggle-btn{
-  margin: 1rem;
+.toggle-btn-container{
+  position: absolute;
+  top: 15px;
+  left: 8px;
+  z-index: 100;
 }
+
+.custom-sidebar{
+  width: 250px;
+  transition: width 0.3s;
+  position: relative;
+}
+

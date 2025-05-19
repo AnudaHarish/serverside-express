@@ -1,9 +1,11 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {CountriesService} from "../../service/countries.service";
-import {map, Observable, startWith} from "rxjs";
+import {map, Observable, of, startWith} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {countryObj} from "../../shared/models/countryDetail";
-import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
+import {NbDialogService, NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
+import {SessionStorageService} from "../../service/session-storage.service";
+import {SessionExpiredComponent} from "../popup/session-expired/session-expired.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -26,14 +28,14 @@ export class DashboardComponent implements OnInit {
   constructor(
     private countryService: CountriesService,
     private cd: ChangeDetectorRef,
-    private toastrService: NbToastrService) { }
+    private toastrService: NbToastrService,
+    private sessionStorage: SessionStorageService,
+    private dialogService: NbDialogService) { }
 
   ngOnInit(): void {
-    // this.getDefault();
-    this.getCountryName();
     this.countryName = new FormControl("");
-    this.options = ['option 1', 'option 2', 'option 3', 'option 4'];
-    // this.filteredControlOptions$ = of(this.options);
+    this.options = this.sessionStorage.getItem("nameList") || ['option 1', 'option 2', 'option 3', 'option 4'];
+    this.filteredControlOptions$ = of(this.options);
     this.filteredControlOptions$ = this.countryName.valueChanges
       .pipe(
         startWith(''),
@@ -54,24 +56,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getCountryName(){
-    this.countryService.getCountryNames().subscribe({
-      error: err => {
-        this.isVisible = false;
-        console.log(err)},
-      next: (res) => {
-        console.log(res);
-        this.options = res;
-        this.filteredControlOptions$ = this.countryName.valueChanges
-          .pipe(
-            startWith(''),
-            map(filterString => this.filter(filterString)),
-          );
-        this.cd.detectChanges();
-      },
-    })
-  }
-
   getCountryDetails(){
     console.log("country",this.countryName.value)
     if(this.countryName.value == ""){
@@ -81,6 +65,9 @@ export class DashboardComponent implements OnInit {
     this.countryService.getCountryDetail(this.countryName.value).subscribe({
       error: err => {
         console.log(err)
+        if(err?.error === 'Access token expired'){
+          this.openPopup();
+        }
         this.showToast("danger", "Error while fetching country details", "Error");
         this.isVisible = false;
       },
@@ -103,4 +90,8 @@ export class DashboardComponent implements OnInit {
     this.toastrService.show(ref, message, { position,status });
   }
 
+  openPopup(){
+    let dialogRef = this.dialogService.open(SessionExpiredComponent);
+    dialogRef.componentRef.instance.title = 'test';
+  }
 }
