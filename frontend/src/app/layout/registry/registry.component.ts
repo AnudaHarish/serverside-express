@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthRequest} from "../../../shared/models/auth.request";
+import {AuthRequest} from "../../shared/models/auth.request";
 import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
-import {AuthService} from "../../../service/auth.service";
+import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 

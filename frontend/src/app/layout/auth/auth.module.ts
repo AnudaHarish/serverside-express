@@ -7,17 +7,13 @@ import {
   NbCardModule,
   NbInputModule,
   NbLayoutModule,
-  NbThemeModule,
   NbToastrModule
 } from "@nebular/theme";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {LoginComponent} from "./login/login.component";
-import { RegistryComponent } from './registry/registry.component';
-
 
 
 @NgModule({
-  declarations: [AuthLayoutComponent, LoginComponent, RegistryComponent],
+  declarations: [AuthLayoutComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -29,6 +25,6 @@ import { RegistryComponent } from './registry/registry.component';
     ReactiveFormsModule,
     NbToastrModule
   ],
-  exports: [AuthLayoutComponent, LoginComponent],
+  exports: [AuthLayoutComponent],
 })
 export class AuthModule { }

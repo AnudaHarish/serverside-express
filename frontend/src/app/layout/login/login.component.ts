@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
-import {AuthService} from "../../../service/auth.service";
-import {AuthRequest,AuthResponse} from "../../../shared/models/auth.request";
-import {AuthInterceptor} from "../../../interceptors/auth.interceptor";
+import {AuthService} from "../../service/auth.service";
+import {AuthRequest,AuthResponse} from "../../shared/models/auth.request";
+import {AuthInterceptor} from "../../interceptors/auth.interceptor";
 import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 
 

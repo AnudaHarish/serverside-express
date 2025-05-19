@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 
 import {
   NbAutocompleteModule,
-  NbButtonModule,
+  NbButtonModule, NbCardModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
   NbMenuModule,
@@ -19,8 +19,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
 import { MainModule } from './layout/main/main.module';
 import {AuthModule} from "./layout/auth/auth.module";
-
-
 
 @NgModule({
   declarations: [
@@ -42,7 +40,9 @@ import {AuthModule} from "./layout/auth/auth.module";
     AuthModule,
     MainModule,
     NbToastrModule.forRoot(),
-    NbAutocompleteModule
+    NbAutocompleteModule,
+    NbCardModule,
+    NbIconModule
   ],
   providers: [
     {

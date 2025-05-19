@@ -9,17 +9,19 @@ import {
   NbIconModule, NbInputModule,
   NbLayoutModule,
   NbMenuModule,
-  NbSidebarModule
+  NbSidebarModule, NbThemeModule
 } from "@nebular/theme";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {DashboardComponent} from "./dashboard/dashboard.component";
-
-
+import {DashboardComponent} from "../dashboard/dashboard.component";
+import {LoginComponent} from "../login/login.component";
+import {RegistryComponent} from "../registry/registry.component";
 
 @NgModule({
   declarations: [
     LayoutComponent,
     DashboardComponent,
+    LoginComponent,
+    RegistryComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
     NbAutocompleteModule,
     NbInputModule,
     ReactiveFormsModule,
+    NbThemeModule
   ],
-  exports: [LayoutComponent, DashboardComponent],
+  exports: [LayoutComponent, DashboardComponent, LoginComponent, RegistryComponent],
 })
 export class MainModule { }

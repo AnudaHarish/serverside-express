@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {CountriesService} from "../../../service/countries.service";
+import {CountriesService} from "../../service/countries.service";
 import {map, Observable, startWith} from "rxjs";
 import {FormControl} from "@angular/forms";
-import {countryObj} from "../../../shared/models/countryDetail";
+import {countryObj} from "../../shared/models/countryDetail";
 import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 
 @Component({
