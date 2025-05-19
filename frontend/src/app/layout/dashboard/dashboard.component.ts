@@ -6,6 +6,7 @@ import {countryObj} from "../../shared/models/countryDetail";
 import {NbDialogService, NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 import {SessionStorageService} from "../../service/session-storage.service";
 import {SessionExpiredComponent} from "../popup/session-expired/session-expired.component";
+// import {LocalDataSource} from "ng2-smart-table";
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +26,15 @@ export class DashboardComponent implements OnInit {
     flag: '',
     currency: ''
   }
+  // dataSource: LocalDataSource = new LocalDataSource();
+  settings:any = null;
+  queryObj : any = {
+    username: '',
+    country: '',
+    page: 1,
+    size: 10,
+    sort: 'newest'
+  };
   constructor(
     private countryService: CountriesService,
     private cd: ChangeDetectorRef,
@@ -93,5 +103,13 @@ export class DashboardComponent implements OnInit {
   openPopup(){
     let dialogRef = this.dialogService.open(SessionExpiredComponent);
     dialogRef.componentRef.instance.title = 'test';
+  }
+
+  setQuery(){
+
+  }
+
+  getBlogPostList(query: any){
+
   }
 }
