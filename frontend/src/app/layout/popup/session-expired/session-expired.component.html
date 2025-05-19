@@ -1,0 +1,20 @@
+<nb-card>
+  <nb-card-header>
+    <span>Caution!</span>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <span>Your session was expired</span>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="row">
+      <div class="col">
+        <button nbButton status="primary" size="small" (click)="refreshAccessToken()">Stay login</button>
+      </div>
+      <div class="col">
+        <button nbButton status="primary" size="small" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </nb-card-footer>
+</nb-card>

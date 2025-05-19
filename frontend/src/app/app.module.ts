@@ -5,26 +5,32 @@ import { AppComponent } from './app.component';
 
 import {
   NbAutocompleteModule,
-  NbButtonModule,
+  NbButtonModule, NbCardModule, NbContextMenuModule, NbDialogModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
   NbMenuModule,
   NbSidebarModule,
-  NbThemeModule, NbToastrModule
+  NbThemeModule, NbToastrModule, NbUserModule
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
-import { MainModule } from './layout/main/main.module';
-import {AuthModule} from "./layout/auth/auth.module";
-
-
+import { SessionExpiredComponent } from './layout/popup/session-expired/session-expired.component';
+import { SmartTableComponent } from './tables/smart-table/smart-table.component';
+import {RegistryComponent} from "./layout/registry/registry.component";
+import {LoginComponent} from "./layout/login/login.component";
+import {DashboardComponent} from "./layout/dashboard/dashboard.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SessionExpiredComponent,
+    SmartTableComponent,
+    RegistryComponent,
+    LoginComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,16 +39,20 @@ import {AuthModule} from "./layout/auth/auth.module";
     NbEvaIconsModule,
     NbLayoutModule,
     BrowserAnimationsModule,
-    NbThemeModule.forRoot({name: 'default'}),
+    NbThemeModule.forRoot({ name: 'default' }),
     NbInputModule,
     FormsModule,
     HttpClientModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
-    AuthModule,
-    MainModule,
     NbToastrModule.forRoot(),
-    NbAutocompleteModule
+    NbAutocompleteModule,
+    NbCardModule,
+    NbIconModule,
+    NbUserModule,
+    NbContextMenuModule,
+    NbDialogModule.forRoot(),
+    ReactiveFormsModule,
   ],
   providers: [
     {
@@ -50,6 +60,9 @@ import {AuthModule} from "./layout/auth/auth.module";
       useClass: AuthInterceptor,
       multi: true
     }
+  ],
+  exports: [
+    SmartTableComponent
   ],
   bootstrap: [AppComponent]
 })
