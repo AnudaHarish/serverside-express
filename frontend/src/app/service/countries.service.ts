@@ -21,7 +21,7 @@ export class CountriesService {
   }
 
   getCountryNames() {
-    return this.http.get<any>(`${this.baseUrl}/countries/nameList`).pipe(
+    return this.http.get<any>(`${this.baseUrl}/defaults/nameList`).pipe(
       map(response => { return response}),
       catchError((err) => {return throwError(err)})
     );

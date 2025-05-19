@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
     private toastrService: NbToastrService) { }
 
   ngOnInit(): void {
-    this.getDefault();
+    // this.getDefault();
     this.getCountryName();
     this.countryName = new FormControl("");
     this.options = ['option 1', 'option 2', 'option 3', 'option 4'];

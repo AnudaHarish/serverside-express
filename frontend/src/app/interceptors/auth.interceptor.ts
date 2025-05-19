@@ -23,26 +23,26 @@ export class AuthInterceptor implements HttpInterceptor {
     });
     return next.handle(req).pipe(catchError((err: HttpErrorResponse) => {
       console.log("error",err);
-      if((err.status === 401 || err.status === 403) && !this.refresh ) {
-        this.refresh = true;
-        console.log("Unauthorized");
-        return this.http.get(
-          `${this.baseUrl}/refresh`,
-        )
-          .pipe(
-            switchMap((res:any) => {
-              AuthInterceptor.accessToken = res?.accessToken;
-
-              return next.handle(
-                request.clone({
-                  setHeaders: {
-                    Authorization: `Bearer ${AuthInterceptor.accessToken}`
-                  }
-                }))
-            })
-          )
-      }
-      this.refresh = false;
+      // if((err.status === 401 || err.status === 403) && !this.refresh ) {
+      //   this.refresh = true;
+      //   console.log("Unauthorized");
+      //   return this.http.get(
+      //     `${this.baseUrl}/refresh`,
+      //   )
+      //     .pipe(
+      //       switchMap((res:any) => {
+      //         AuthInterceptor.accessToken = res?.accessToken;
+      //
+      //         return next.handle(
+      //           request.clone({
+      //             setHeaders: {
+      //               Authorization: `Bearer ${AuthInterceptor.accessToken}`
+      //             }
+      //           }))
+      //       })
+      //     )
+      // }
+      // this.refresh = false;
       return throwError(() => err);
     }))
   }

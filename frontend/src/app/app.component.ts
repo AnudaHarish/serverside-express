@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
         if(res.status === 204) {
           this.sessionStorage.clear();
           AuthInterceptor.accessToken = '';
-          this.router.navigateByUrl('/login');
+          // this.router.navigateByUrl('/login');
         }
       }
     })

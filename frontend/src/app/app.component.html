@@ -1,28 +1,23 @@
 <nb-layout>
 
   <nb-layout-header subheader>
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <div>
-        <button nbButton ghost (click)="toggleSidebar()">
-          <nb-icon icon="menu-outline"></nb-icon>
-        </button>
+    <div class="row">
+
+      <div class="col" style="display: flex; justify-content: end">
+        <nb-user  name= "{{username}}"
+                  title= ""
+                  [nbContextMenu]="isLoggIn ? items2 : items"
+                  nbContextMenuTag="my-context-menu">
+        </nb-user>
       </div>
-
-      <nb-user  name= "{{username}}"
-                title= ""
-                [nbContextMenu]="isLoggIn ? items2 : items"
-                nbContextMenuTag="my-context-menu">
-      </nb-user>
-
-<!--      <div>-->
-<!--        <button nbButton status="primary" (click)="login()">-->
-<!--          <nb-icon icon="log-out-outline"></nb-icon>-->
-<!--          login-->
-<!--        </button>-->
-<!--      </div>-->
     </div>
   </nb-layout-header>
   <nb-sidebar *ngIf="isLoggIn">
+    <div class="toggle-btn">
+      <button nbButton ghost (click)="toggleSidebar()">
+        <nb-icon icon="menu-outline"></nb-icon>
+      </button>
+    </div>
     <!-- Add sidebar header -->
     <div class="sidebar-header">
       <nb-card class="sidebar-user-card">
