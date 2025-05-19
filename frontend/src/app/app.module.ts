@@ -22,6 +22,9 @@ import { SmartTableComponent } from './tables/smart-table/smart-table.component'
 import {RegistryComponent} from "./layout/registry/registry.component";
 import {LoginComponent} from "./layout/login/login.component";
 import {DashboardComponent} from "./layout/dashboard/dashboard.component";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -53,6 +56,9 @@ import {DashboardComponent} from "./layout/dashboard/dashboard.component";
     NbContextMenuModule,
     NbDialogModule.forRoot(),
     ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
   ],
   providers: [
     {
