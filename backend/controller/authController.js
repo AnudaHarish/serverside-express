@@ -54,25 +54,50 @@ const login = async (req, res) => {
 }
 
 const checkAuthentication = async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    if(!authHeader) return res.status(404).json({message: "Logout required"});
-    console.log(authHeader);
-    const token = authHeader.split(' ')[1];
-    jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-            if (err) {
-                //invalid token
-                return res.status(401).json({message: "Refresh required"});
-            }
-            req.user = {
-                id: decoded.user.id,
-                username: decoded.user.username
-            }
-            return res.status(200).json({message: "Authentication successful"});
+    try{
+        const authHeader = req.headers['authorization'];
+        if(!authHeader) return res.status(404).json({message: "Logout required"});
+        console.log("authheader",authHeader);
+        const token = authHeader.split(' ')[1].trim();
+        console.log("token",token);
+        const decoded = await new Promise((resolve, reject) => {
+            jwt.verify(
+                token,
+                process.env.ACCESS_TOKEN_SECRET,
+                (err, decoded) => {
+                    if(err) {
+                        return reject(err);
+                    }
+                    resolve(decoded);
+                }
+            )
+        })
+        req.user = {
+            id: decoded.user.id,
+            username: decoded.user.username
         }
-    )
+        return res.status(200).json({message: "Authentication successful"});
+    }catch(err){
+        console.log("Error in verifyJwt", err);
+        if (err.name === "TokenExpiredError" || err.name === "JsonWebTokenError") {
+            return res.status(401).json({ message: "Refresh required" });
+        }
+        return res.status(500).json({ message: "Logout required" });
+    }
 }
-
+// const jwt.verify(
+//     token,
+//     process.env.ACCESS_TOKEN_SECRET,
+//     (err, decoded) => {
+//         if (err) {
+//             //invalid token
+//             return res.status(401).json({message: "Refresh required"});
+//         }
+//         req.user = {
+//             id: decoded.user.id,
+//             username: decoded.user.username
+//         }
+//         return res.status(200).json({message: "Authentication successful"});
+//     }
+// )
 module.exports = {login, checkAuthentication};

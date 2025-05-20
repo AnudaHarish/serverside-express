@@ -20,9 +20,10 @@ export class AuthInterceptor implements HttpInterceptor {
   ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = this.sessionStorage.getItem("travelT_token");
     const req = request.clone({
       setHeaders: {
-        Authorization: `Bearer ${AuthInterceptor.accessToken}`
+        Authorization: `Bearer ${token}`
       }
     });
     return next.handle(req).pipe(catchError((err: HttpErrorResponse) => {

@@ -28,6 +28,6 @@ export class BlogPostService {
   }
 
   getBlogPostData(id:any):Observable<any>{
-    return this.http.get(`${this.baseUrl}/defaults/blog/${id}`).pipe()
+    return this.http.get(`${this.baseUrl}/defaults/blog/${id}`);
   }
 }

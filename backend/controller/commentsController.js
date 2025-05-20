@@ -22,7 +22,9 @@ const getComments = async (req, res) => {
 const createComment = async (req, res) => {
     try{
         const blog_post_id = req.params.id;
+        console.log("blog_post_id",blog_post_id);
         const user_id = req.user?.id;
+        console.log("req",req.body)
         const { comment } = req.body;
 
         if(!user_id){

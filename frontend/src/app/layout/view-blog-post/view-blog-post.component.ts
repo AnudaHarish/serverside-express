@@ -5,6 +5,7 @@ import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 import {SessionStorageService} from "../../service/session-storage.service";
 import {FormControl} from "@angular/forms";
 import {UtilityService} from "../../service/utility.service";
+import {CommentsService} from "../../service/comments.service";
 
 @Component({
   selector: 'app-view-blog-post',
@@ -26,10 +27,11 @@ export class ViewBlogPostComponent implements OnInit {
     private toastrService: NbToastrService,
     private sessionStorage: SessionStorageService,
     private utilityService: UtilityService,
+    private commentService: CommentsService
   ) { }
 
   ngOnInit(): void {
-    this.commentsControl = new FormControl;
+    this.commentsControl = new FormControl("");
     this.blogId = this.route.snapshot.paramMap.get('id');
     this.userId = this.sessionStorage.getItem("travelT_id");
     this.username = this.sessionStorage.getItem("travelT_username");
@@ -66,6 +68,21 @@ export class ViewBlogPostComponent implements OnInit {
   }
 
   sendComment(){
-
+    console.log("value",this.commentsControl.value);
+    if(!this.commentsControl.value){
+      return;
+    }
+    this.commentService.addComment(this.commentsControl.value, this.blogId).subscribe({
+      error: error => {
+        console.error(error);
+        if(error.error === 'Access token expired'){
+          this.utilityService.openPopup();
+        }
+      },
+      next: res => {
+        this.commentsControl.reset();
+        this.getData();
+      }
+    })
   }
 }
