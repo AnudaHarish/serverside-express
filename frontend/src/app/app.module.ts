@@ -8,7 +8,7 @@ import {
   NbButtonModule, NbCardModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
-  NbMenuModule,
+  NbMenuModule, NbSelectModule,
   NbSidebarModule,
   NbThemeModule, NbToastrModule, NbUserModule,
 } from "@nebular/theme";
@@ -62,6 +62,7 @@ import { CreateBlogComponent } from './layout/create-blog/create-blog.component'
     MatPaginatorModule,
     MatSortModule,
     NbDatepickerModule.forRoot(),
+    NbSelectModule,
   ],
   providers: [
     {

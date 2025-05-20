@@ -94,4 +94,8 @@ export class AuthService {
       })
     )
   }
+
+  userList(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/defaults/usernameList`);
+  }
 }

@@ -10,6 +10,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {BlogPostService} from "../../service/blog-post.service";
+import {AuthService} from "../../service/auth.service";
 
 interface BlogPost {
   id: number;
@@ -27,13 +28,17 @@ interface BlogPost {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  displayedColumns: string[] = ['title', 'author', 'country', 'likes_count', 'comments_count'];
+  displayedColumns: string[] = ['title', 'author', 'country', 'created_at', 'likes_count', 'comments_count'];
   dataSource = new MatTableDataSource<BlogPost>([]);
   options!: string[];
   filteredControlOptions$!: Observable<string[]>;
+  filterNameOptions$!: Observable<string[]>;
   countryName! : FormControl;
+  userName!: FormControl;
   isVisible: boolean = false;
   position = NbGlobalPhysicalPosition;
+  filterControl!: FormControl;
+  pageSizeControl!: FormControl;
   countryObj : countryObj = {
     name: '',
     languages: [],
@@ -45,39 +50,50 @@ export class DashboardComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
   sortOption = 'newest';
+  totalPages = 0;
+  totalRecords = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  // dataSource: LocalDataSource = new LocalDataSource();
-  settings:any = null;
-  queryObj : any = {
-    username: '',
-    country: '',
-    page: 1,
-    size: 10,
-    sort: 'newest'
-  };
+  usernameList!: string[];
+
   constructor(
     private countryService: CountriesService,
     private cd: ChangeDetectorRef,
     private toastrService: NbToastrService,
     private sessionStorage: SessionStorageService,
     private dialogService: NbDialogService,
-    private blogPostService: BlogPostService,) { }
+    private blogPostService: BlogPostService,
+    private userService: AuthService) { }
 
   ngOnInit(): void {
     this.countryName = new FormControl("");
+    this.userName = new FormControl("");
+    this.filterControl = new FormControl("newest");
+    this.pageSizeControl = new FormControl(JSON.stringify(this.pageSize));
     this.options = this.sessionStorage.getItem("nameList") || ['option 1', 'option 2', 'option 3', 'option 4'];
+    this.getUserNameList();
     this.filteredControlOptions$ = of(this.options);
     this.filteredControlOptions$ = this.countryName.valueChanges
       .pipe(
         startWith(''),
         map(filterString => this.filter(filterString)),
       );
+    this.filterNameOptions$ = this.userName.valueChanges
+    .pipe(
+      startWith(''),
+      map(filterString => this.filterName(filterString)),
+    )
+    this.fetchData();
   }
 
   private filter(value: string) {
     const filterValue = value.toLowerCase();
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  private filterName(value: string) {
+    const filterValue = value.toLowerCase();
+    return this.usernameList.filter(option => option.toLowerCase().includes(filterValue));
   }
 
 
@@ -90,31 +106,32 @@ export class DashboardComponent implements OnInit {
 
   getCountryDetails(){
     console.log("country",this.countryName.value)
-    if(this.countryName.value == ""){
-      this.showToast("danger", "Please select a country name", "Error");
-      return;
-    }
-    this.countryService.getCountryDetail(this.countryName.value).subscribe({
-      error: err => {
-        console.log(err)
-        if(err?.error === 'Access token expired'){
-          this.openPopup();
-        }
-        this.showToast("danger", "Error while fetching country details", "Error");
-        this.isVisible = false;
-      },
-      next: (res) => {
-        console.log(res);
-        const selectedCountry = res[0];
-        this.countryObj.name = selectedCountry.name;
-        this.countryObj.languages = selectedCountry.languages;
-        this.countryObj.capital = selectedCountry.capital;
-        this.countryObj.flag = selectedCountry.flag;
-        this.countryObj.currency = selectedCountry.currency;
-        this.isVisible = true;
-        this.cd.detectChanges();
-      }
-    })
+    // if(this.countryName.value == ""){
+    //   this.showToast("danger", "Please select a country name", "Error");
+    //   return;
+    // }
+    this.fetchData();
+    // this.countryService.getCountryDetail(this.countryName.value).subscribe({
+    //   error: err => {
+    //     console.log(err)
+    //     if(err?.error === 'Access token expired'){
+    //       this.openPopup();
+    //     }
+    //     this.showToast("danger", "Error while fetching country details", "Error");
+    //     this.isVisible = false;
+    //   },
+    //   next: (res) => {
+    //     console.log(res);
+    //     const selectedCountry = res[0];
+    //     this.countryObj.name = selectedCountry.name;
+    //     this.countryObj.languages = selectedCountry.languages;
+    //     this.countryObj.capital = selectedCountry.capital;
+    //     this.countryObj.flag = selectedCountry.flag;
+    //     this.countryObj.currency = selectedCountry.currency;
+    //     this.isVisible = true;
+    //     this.cd.detectChanges();
+    //   }
+    // })
   }
 
   showToast(status: any, message: string, ref: string) {
@@ -129,19 +146,19 @@ export class DashboardComponent implements OnInit {
 
   fetchData(){
     this.blogPostService.search({
+      country: this.countryName.value,
+      username: this.userName.value,
       page: this.currentPage,
       size: this.pageSize,
       sort: this.sortOption
-      // pass in country and username filters as needed
     }).subscribe(response => {
-      this.dataSource.data = response.payload;
-      // you might also update paginator length here, e.g., response.metadata.total
+      this.dataSource.data = response?.payload;
+      this.totalPages = response?.metadata?.totalPages;
+      this.totalRecords = response?.metadata?.total;
     });
   }
 
   onSortChange(event: any) {
-    // Update the sort option based on the column sorted and direction
-    // You could map MatSort changes to your sort options (e.g., newest, mostLiked, etc.)
     this.sortOption = event.active === 'likes_count' ? 'mostLiked' :
       event.active === 'comments_count' ? 'mostCommented' :
         'newest';
@@ -151,6 +168,30 @@ export class DashboardComponent implements OnInit {
   onPageChange(event: any) {
     this.currentPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
+    this.fetchData();
+  }
+
+  onRowClick(row:any){
+    console.log("row", row);
+  }
+
+  onPageSizeChange() {
+    this.pageSize = parseInt(this.pageSizeControl.value);
+    this.fetchData();
+  }
+
+  getUserNameList(){
+    this.userService.userList().subscribe({
+      error: err => console.log(err),
+      next: (res) => {
+        this.usernameList = res?.payload;
+        this.filterNameOptions$ = of(this.usernameList);
+      }
+    });
+  }
+
+  filterChange(){
+    this.sortOption = this.filterControl.value;
     this.fetchData();
   }
 }

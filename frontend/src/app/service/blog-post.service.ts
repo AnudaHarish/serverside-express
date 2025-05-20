@@ -14,8 +14,12 @@ export class BlogPostService {
   ) { }
 
   search(queryObj: SearchQuery): Observable<any> {
-    const queryString = JSON.stringify(queryObj);
-    const params = new HttpParams().set("query", queryString);
+    const params = new HttpParams()
+      .set("country", queryObj.country)
+      .set("username", queryObj.username)
+      .set("page", queryObj.page.toString())
+      .set("size", queryObj.size.toString())
+      .set("sort", queryObj.sort);
     return this.http.get(`${this.baseUrl}/defaults/search`, {params});
   }
 

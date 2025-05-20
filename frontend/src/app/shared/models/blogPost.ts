@@ -1,9 +1,9 @@
 export interface SearchQuery {
-  country?: string;
-  username?: string;
-  page?: number;
-  size?: number;
-  sort?: string;
+  country: string;
+  username: string;
+  page: number;
+  size: number;
+  sort: string;
 }
 
 export interface blogPostData {
