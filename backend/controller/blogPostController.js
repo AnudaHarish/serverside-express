@@ -255,7 +255,8 @@ const searchBlogPost = async (req, res) => {
                 bp.created_at,
                 u.username AS author,
                 c.name AS country,
-                (SELECT COUNT(*) FROM blog_post_likes l WHERE l.blog_post_id = bp.id) AS likes_count,
+                (SELECT COUNT(*) FROM blog_post_likes l WHERE l.blog_post_id = bp.id AND is_like = 1) AS likes_count,
+                (SELECT COUNT(*) FROM blog_post_likes l WHERE l.blog_post_id = bp.id AND is_like = 0) AS dislikes_count,
                 (SELECT COUNT(*) FROM blog_post_comments cm WHERE cm.blog_post_id = bp.id) AS comments_count
             FROM blog_posts bp
             JOIN users u ON bp.user_id = u.id
@@ -331,4 +332,77 @@ const searchBlogPost = async (req, res) => {
     }
 }
 
-module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost, searchBlogPost}
+const getBlogPostByIdSQL = async (req, res) => {
+    try{
+        const id = req.params.id;
+        if(!id){
+            return res.status(400).json({error: "Blog post id is required"});
+        }
+        //query1: get blog post data along with country details
+        const postQuery = `
+            SELECT
+                bp.*,
+                c.name AS country_name,
+                c.currency AS currency,
+                c.capital AS capital,
+                c.languages AS languages,
+                c.flag AS flag
+            FROM blog_posts bp
+            JOIN countries c ON bp.country_id = c.id
+            WHERE bp.id = ?  
+        `;
+        const post = await BlogPostDAO.queryOne(postQuery, [id]);
+        if(!post){
+            return res.status(404).json({error: "Blog post not found"});
+        }
+        //query2: get dislike and like count
+        const likeQuery = `SELECT COUNT(*) AS count FROM blog_post_likes WHERE blog_post_id = ? AND is_like = 1`;
+        const disLikeQuery = `SELECT COUNT(*) AS count FROM blog_post_likes WHERE blog_post_id = ? AND is_like = 0`;
+
+        const dislikeResults = await BlogPostDAO.queryOne(disLikeQuery, [id]);
+        const likeResults = await BlogPostDAO.queryOne(likeQuery, [id]);
+        const likeCount = likeResults ? likeResults.count : 0;
+        const dislikeCount = dislikeResults ? dislikeResults.count : 0;
+
+        //query3: get comments
+        const commentQuery = `
+            SELECT *
+            FROM blog_post_comments
+            WHERE blog_post_id = ?
+            ORDER BY created_at ASC     
+        `;
+        const comments = await BlogPostDAO.queryAll(commentQuery, [id]);
+
+        //query4:check current user liked or disliked the post
+        let currentUserStatus = null;
+        if(req.user && req.user.id){
+            const user_id = req.user.id;
+            const query = `
+                SELECT is_like
+                FROM blog_post_likes
+                WHERE blog_post_id = ? AND user_id = ?
+            `;
+            const result = await BlogPostDAO.queryOne(query, [id, user_id]);
+            if(result){
+                currentUserStatus = (result.is_like == 1);
+            }
+        }
+
+        //adding the extracted data to the post
+        post.like_count =  likeCount;
+        post.dislike_count = dislikeCount;
+        post.comment_count = comments.length;
+        post.comments = comments;
+        post.is_like = currentUserStatus;
+
+        return res.status(200).json({
+            message: "Successfully retrieved a blog post",
+            payload: post
+        });
+    }catch(err){
+        console.error("Error in getBlogPostByIdSQL", err);
+        return res.status(500).json({error: "Internal server error"});
+    }
+}
+
+module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost, searchBlogPost, getBlogPostByIdSQL}

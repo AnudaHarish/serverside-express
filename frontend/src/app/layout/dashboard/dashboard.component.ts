@@ -11,6 +11,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {BlogPostService} from "../../service/blog-post.service";
 import {AuthService} from "../../service/auth.service";
+import {Router} from "@angular/router";
 
 interface BlogPost {
   id: number;
@@ -28,7 +29,7 @@ interface BlogPost {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  displayedColumns: string[] = ['title', 'author', 'country', 'created_at', 'likes_count', 'comments_count'];
+  displayedColumns: string[] = ['title', 'author', 'country', 'created_at', 'likes_count', 'dislikes_count', 'comments_count'];
   dataSource = new MatTableDataSource<BlogPost>([]);
   options!: string[];
   filteredControlOptions$!: Observable<string[]>;
@@ -54,7 +55,7 @@ export class DashboardComponent implements OnInit {
   totalRecords = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  usernameList!: string[];
+  usernameList: string[] = [];
 
   constructor(
     private countryService: CountriesService,
@@ -63,7 +64,9 @@ export class DashboardComponent implements OnInit {
     private sessionStorage: SessionStorageService,
     private dialogService: NbDialogService,
     private blogPostService: BlogPostService,
-    private userService: AuthService) { }
+    private userService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.countryName = new FormControl("");
@@ -173,6 +176,7 @@ export class DashboardComponent implements OnInit {
 
   onRowClick(row:any){
     console.log("row", row);
+    this.router.navigate(["/view", row.id])
   }
 
   onPageSizeChange() {

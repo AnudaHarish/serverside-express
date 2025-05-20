@@ -4,6 +4,7 @@ import {LoginComponent} from "./layout/login/login.component";
 import {DashboardComponent} from "./layout/dashboard/dashboard.component";
 import {RegistryComponent} from "./layout/registry/registry.component";
 import {CreateBlogComponent} from "./layout/create-blog/create-blog.component";
+import {ViewBlogPostComponent} from "./layout/view-blog-post/view-blog-post.component";
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'create',
     component: CreateBlogComponent
+  },
+  {
+    path: 'view/:id',
+    component: ViewBlogPostComponent
   },
 
   // {

@@ -26,6 +26,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import { CreateBlogComponent } from './layout/create-blog/create-blog.component';
+import { ViewBlogPostComponent } from './layout/view-blog-post/view-blog-post.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { CreateBlogComponent } from './layout/create-blog/create-blog.component'
     LoginComponent,
     DashboardComponent,
     CreateBlogComponent,
+    ViewBlogPostComponent,
   ],
   imports: [
     BrowserModule,
