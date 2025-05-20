@@ -46,6 +46,7 @@ export class SessionExpiredComponent implements OnInit {
             let payload:any = JSON.parse(atob(accessToken.split(".")[1]));
             console.log(payload);
             //set session storage
+            this.sessionStorage.setKey("travelT_token", accessToken);
             this.sessionStorage.setKey("travelT_id", payload?.user?.id);
             this.sessionStorage.setKey("travelT_username", payload?.user?.username);
             this.close();

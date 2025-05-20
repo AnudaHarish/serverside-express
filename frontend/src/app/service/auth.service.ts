@@ -71,17 +71,8 @@ export class AuthService {
     )
   }
 
-  checkAuth(): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}/login/auth`).pipe(
-      map((response: any) => {
-        this.authStatus.next(response.authenticated);
-        return response.authenticated;
-      }),
-      catchError(() => {
-        this.authStatus.next(false);
-        return of(false);
-      })
-    );
+  checkAuth(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/login/auth`);
   }
 
   refreshToken(): Observable<any> {

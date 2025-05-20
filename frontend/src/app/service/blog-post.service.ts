@@ -26,4 +26,8 @@ export class BlogPostService {
   createBlog(data:any):Observable<any>{
     return this.http.post(`${this.baseUrl}/pBlog/create`, data);
   }
+
+  getBlogPostData(id:any):Observable<any>{
+    return this.http.get(`${this.baseUrl}/defaults/blog/${id}`).pipe()
+  }
 }

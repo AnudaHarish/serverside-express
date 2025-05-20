@@ -1,1 +1,82 @@
-<p>view-blog-post works!</p>
+<nb-card accent="info">
+  <nb-card-header>
+    <div class="row justify-content-between">
+      <div class="col-auto">
+        <span>Created by: {{data?.username}}</span>
+      </div>
+      <div class="col-auto">
+        <span>{{data?.created_at}}</span>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row justify-content-start">
+      <div class="col-auto">
+        <h4>{{data?.title}}</h4>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col">
+        <span class="text-content">{{data?.content}}</span>
+      </div>
+    </div>
+    <div class="row mt-3 border p-3">
+      <div class="row">
+        <h6>Country Info</h6>
+      </div>
+      <div class="row justify-content-center mb-3">
+        <div class="col-auto">
+          <span class="text-dark text-large">{{data?.country_name}}</span>
+        </div>
+      </div>
+      <div class="row justify-content-center mb-3">
+        <div class="col-auto border-box">
+          <img [src]="data?.flag" [alt]="data?.flag + 'flag'" class="img-fluid img-size" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"><span class="text-dark text-size">Capital:</span> {{data?.capital}}</div>
+        <div class="col"><span class="text-dark text-size">Currency:</span> {{data?.currency}}</div>
+        <div class="col"><span class="text-dark text-size">Languages:</span> {{data?.languages}}</div>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="row justify-content-start">
+      <div class="col-6">
+        <div class="col">
+          <button nbButton ghost status="success"><nb-icon icon="heart-outline"></nb-icon>{{data?.like_count}}</button>
+          <button nbButton ghost status="danger"><nb-icon icon="heart-outline"></nb-icon>{{data?.dislike_count}}</button>
+          <button nbButton ghost status="primary"><nb-icon [icon]="isOpened ? 'message-circle' : 'message-circle-outline'" (click)="onSelect()"></nb-icon>{{data?.like_count}}</button>
+        </div>
+      </div>
+      <div class="col-6"></div>
+    </div>
+  </nb-card-footer>
+</nb-card>
+<!--  comment section-->
+<!--*ngIf="isOpened"-->
+<nb-card>
+  <nb-card-header>Comments</nb-card-header>
+  <nb-card-body>
+    <nb-accordion multi>
+      <nb-accordion-item>
+        <nb-accordion-item-header>Add comments</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          <div class="row">
+            <div class="col">
+              <input type="text" nbInput fullWidth [formControl]="commentsControl">
+            </div>
+            <div class="col">
+              <button nbButton ghost status="primary"><nb-icon icon="message-square" (click)="sendComment()">button</nb-icon></button>
+            </div>
+          </div>
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header>View comments</nb-accordion-item-header>
+        <nb-accordion-item-body></nb-accordion-item-body>
+      </nb-accordion-item>
+    </nb-accordion>
+  </nb-card-body>
+</nb-card>

@@ -346,9 +346,11 @@ const getBlogPostByIdSQL = async (req, res) => {
                 c.currency AS currency,
                 c.capital AS capital,
                 c.languages AS languages,
-                c.flag AS flag
+                c.flag AS flag,
+                u.username AS username
             FROM blog_posts bp
             JOIN countries c ON bp.country_id = c.id
+            JOIN users u ON bp.user_id = u.id
             WHERE bp.id = ?  
         `;
         const post = await BlogPostDAO.queryOne(postQuery, [id]);
@@ -366,8 +368,11 @@ const getBlogPostByIdSQL = async (req, res) => {
 
         //query3: get comments
         const commentQuery = `
-            SELECT *
-            FROM blog_post_comments
+            SELECT 
+                bc.*,
+                u.username AS commented_username
+            FROM blog_post_comments bc
+            JOIN users u ON bc.user_id = u.id
             WHERE blog_post_id = ?
             ORDER BY created_at ASC     
         `;

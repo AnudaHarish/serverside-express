@@ -45,7 +45,8 @@ export class LoginComponent implements OnInit {
           if(!payload || !payload?.user){
             return console.error("Error in authentication");
           }
-          AuthInterceptor.accessToken = token;
+          // AuthInterceptor.accessToken = token;
+          this.sessionStorage.setKey("travelT_token", token);
           this.sessionStorage.setKey("travelT_id", payload.user?.id);
           this.sessionStorage.setKey("travelT_username", payload.user?.username);
           this.router.navigateByUrl('/dashboard');

@@ -55,7 +55,7 @@ const login = async (req, res) => {
 
 const checkAuthentication = async (req, res) => {
     const authHeader = req.headers['authorization'];
-    if(!authHeader) return res.status(401).json({"authenticated": false});
+    if(!authHeader) return res.status(404).json({message: "Logout required"});
     console.log(authHeader);
     const token = authHeader.split(' ')[1];
     jwt.verify(
@@ -64,13 +64,13 @@ const checkAuthentication = async (req, res) => {
         (err, decoded) => {
             if (err) {
                 //invalid token
-                return res.status(403).json({"authenticated": false});
+                return res.status(401).json({message: "Refresh required"});
             }
             req.user = {
                 id: decoded.user.id,
                 username: decoded.user.username
             }
-            return res.status(200).json({"authenticated": true});
+            return res.status(200).json({message: "Authentication successful"});
         }
     )
 }

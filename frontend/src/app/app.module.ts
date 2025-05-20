@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import {
+  NbAccordionModule,
   NbAutocompleteModule,
   NbButtonModule, NbCardModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbIconModule,
   NbInputModule,
@@ -27,6 +28,7 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import { CreateBlogComponent } from './layout/create-blog/create-blog.component';
 import { ViewBlogPostComponent } from './layout/view-blog-post/view-blog-post.component';
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { ViewBlogPostComponent } from './layout/view-blog-post/view-blog-post.co
     MatSortModule,
     NbDatepickerModule.forRoot(),
     NbSelectModule,
+    NbAccordionModule,
+    CommonModule,
   ],
   providers: [
     {
