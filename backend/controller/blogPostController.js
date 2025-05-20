@@ -7,6 +7,7 @@ const createBlogPost = async (req,res) => {
     try{
         //extract blog post details
         const {countryData, blogPostData} = req.body;
+        console.log("req.body", req.body)
         const {name, flag, capital, currency, region, languages} = countryData
         const {title, content, date_of_visit} = blogPostData;
         //extract user id
@@ -290,7 +291,7 @@ const searchBlogPost = async (req, res) => {
         const finalQuery = baseQuery + orderClause + limitClause;
 
         //execute query
-        const posts = await BlogPostDAO.queryOne(finalQuery, params);
+        const posts = await BlogPostDAO.queryAll(finalQuery, params);
 
         //get total count for pagination
         let countQuery = `

@@ -5,3 +5,9 @@ export interface SearchQuery {
   size?: number;
   sort?: string;
 }
+
+export interface blogPostData {
+  title: string;
+  content: string;
+  date_of_visit: string;
+}

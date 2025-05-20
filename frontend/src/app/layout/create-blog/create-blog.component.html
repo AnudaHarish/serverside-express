@@ -1,0 +1,119 @@
+<nb-card>
+  <nb-card-body>
+    <div class="row">
+      <div class="col">
+        <h4>Create Blog Post</h4>
+      </div>
+    </div>
+    <form [formGroup]="formData">
+      <div class="border p-3">
+        <div class="row">
+          <div class="col">
+            <h6>1.Share your travel experience</h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="row">
+              <div class="col-1">
+                Blog title:
+              </div>
+              <div class="col">
+                <input nbInput size="small" type="text" placeholder="blog title" formControlName="title">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col">
+            <div class="row">
+              <div class="col-1">
+                Blog Content:
+              </div>
+              <div class="col">
+                <textarea nbInput size="small" placeholder="blog content" class="custom-textarea" formControlName="content"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col">
+            <div class="row">
+              <div class="col-1">
+                Visit date:
+              </div>
+              <div class="col">
+                <input nbInput size="small" placeholder="pick a date" formControlName="date" [nbDatepicker]="dateTimePicker">
+                <nb-datepicker #dateTimePicker></nb-datepicker>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border mt-5 p-3">
+        <div class="row">
+          <div class="col"><h6>2.Country Details</h6></div>
+        </div>
+        <!--search-->
+        <div class="row">
+          <div class="col-auto">
+            <div class="row">
+              <div class="col">
+                <input
+                  nbInput
+                  type="text"
+                  placeholder="search"
+                  formControlName="country"
+                  [nbAutocomplete]="autoControl"
+                  size="small">
+                <nb-autocomplete #autoControl>
+                  <nb-option *ngFor="let option of filteredControlOptions$ | async" [value]="option">
+                    {{option}}
+                  </nb-option>
+                </nb-autocomplete>
+              </div>
+              <div class="col pt-1">
+                <button nbButton status="primary" size="small" (click)="getCountryDetails()">Search</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- filtered country data -->
+        <div *ngIf="isVisible" class="row">
+          <div class="row justify-content-center mb-3">
+            <div class="col-auto">
+              <span class="text-dark text-large">{{countryData.name}}</span>
+            </div>
+          </div>
+          <div class="row justify-content-center mb-3">
+            <div class="col-auto border-box">
+              <img [src]="countryData.flag" [alt]="countryData.flag + 'flag'" class="img-fluid img-size" >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col"><span class="text-dark text-size">Capital:</span> {{countryData.capital}}</div>
+            <div class="col"><span class="text-dark text-size">Currency:</span> {{countryData.currency}}</div>
+            <div class="col"><span class="text-dark text-size">Languages:</span> {{countryData.languages}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-end pt-3">
+        <div class="col-auto">
+          <div class="row">
+            <div class="col">
+              <button nbButton status="primary">Reset</button>
+            </div>
+            <div class="col">
+              <button nbButton status="primary" (click)="saveBlog()">Save</button>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="col"></div>
+    </div>
+  </nb-card-body>
+</nb-card>

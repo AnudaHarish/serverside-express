@@ -16,6 +16,10 @@ export class BlogPostService {
   search(queryObj: SearchQuery): Observable<any> {
     const queryString = JSON.stringify(queryObj);
     const params = new HttpParams().set("query", queryString);
-    return this.http.get(`${this.baseUrl}/defaults/search`, {params})
+    return this.http.get(`${this.baseUrl}/defaults/search`, {params});
+  }
+
+  createBlog(data:any):Observable<any>{
+    return this.http.post(`${this.baseUrl}/pBlog/create`, data);
   }
 }

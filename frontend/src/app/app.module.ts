@@ -5,12 +5,12 @@ import { AppComponent } from './app.component';
 
 import {
   NbAutocompleteModule,
-  NbButtonModule, NbCardModule, NbContextMenuModule, NbDialogModule, NbIconModule,
+  NbButtonModule, NbCardModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
   NbMenuModule,
   NbSidebarModule,
-  NbThemeModule, NbToastrModule, NbUserModule
+  NbThemeModule, NbToastrModule, NbUserModule,
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -25,6 +25,7 @@ import {DashboardComponent} from "./layout/dashboard/dashboard.component";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
+import { CreateBlogComponent } from './layout/create-blog/create-blog.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {MatSortModule} from "@angular/material/sort";
     RegistryComponent,
     LoginComponent,
     DashboardComponent,
+    CreateBlogComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,13 +61,14 @@ import {MatSortModule} from "@angular/material/sort";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    NbDatepickerModule.forRoot(),
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
   ],
   exports: [
     SmartTableComponent

@@ -4,4 +4,5 @@ export interface countryObj {
   currency: string;
   capital: string;
   flag: string;
+  region: string;
 }

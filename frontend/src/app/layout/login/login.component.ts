@@ -40,12 +40,12 @@ export class LoginComponent implements OnInit {
         },
         next: (res) => {
           const token = res?.accessToken;
-          AuthInterceptor.accessToken = token;
           const payload = JSON.parse(atob(token.split(".")[1]));
           console.log(payload?.user?.id);
           if(!payload || !payload?.user){
             return console.error("Error in authentication");
           }
+          AuthInterceptor.accessToken = token;
           this.sessionStorage.setKey("travelT_id", payload.user?.id);
           this.sessionStorage.setKey("travelT_username", payload.user?.username);
           this.router.navigateByUrl('/dashboard');

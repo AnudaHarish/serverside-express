@@ -39,7 +39,8 @@ export class DashboardComponent implements OnInit {
     languages: [],
     capital: '',
     flag: '',
-    currency: ''
+    currency: '',
+    region: ''
   }
   currentPage = 1;
   pageSize = 10;

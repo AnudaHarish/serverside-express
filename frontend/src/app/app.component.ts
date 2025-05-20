@@ -20,6 +20,11 @@ export class AppComponent implements OnInit {
       icon: 'home-outline',
       link: '/dashboard',
     },
+    {
+      title: 'Create Blog',
+      icon: 'book-outline',
+      link: '/create',
+    },
   ];
   items = [
     {title: "Login"},
