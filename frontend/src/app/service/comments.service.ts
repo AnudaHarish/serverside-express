@@ -13,7 +13,10 @@ export class CommentsService {
   ) { }
 
   addComment(comment:any, id:any): Observable<any> {
-    console.log("comment",comment);
-    return this.http.post(`${this.baseUrl}/comments/create/${id}`,comment)
+    return this.http.post(`${this.baseUrl}/comments/create/${id}`,{comment: comment});
+  }
+
+  updateComment(comment:any, id:any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/comments/update/${id}`,{comment: comment});
   }
 }

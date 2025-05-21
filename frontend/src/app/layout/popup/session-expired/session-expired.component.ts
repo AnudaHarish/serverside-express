@@ -50,6 +50,7 @@ export class SessionExpiredComponent implements OnInit {
             this.sessionStorage.setKey("travelT_id", payload?.user?.id);
             this.sessionStorage.setKey("travelT_username", payload?.user?.username);
             this.close();
+            window.location.reload();
         }
       }
     });

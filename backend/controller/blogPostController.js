@@ -380,6 +380,7 @@ const getBlogPostByIdSQL = async (req, res) => {
 
         //query4:check current user liked or disliked the post
         let currentUserStatus = null;
+        console.log("user_id", req.user)
         if(req.user && req.user.id){
             const user_id = req.user.id;
             const query = `
@@ -389,6 +390,7 @@ const getBlogPostByIdSQL = async (req, res) => {
             `;
             const result = await BlogPostDAO.queryOne(query, [id, user_id]);
             if(result){
+                console.log("result",result);
                 currentUserStatus = (result.is_like == 1);
             }
         }

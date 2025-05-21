@@ -45,12 +45,19 @@
     <div class="row justify-content-start">
       <div class="col-6">
         <div class="col">
-          <button nbButton ghost status="success"><nb-icon icon="heart-outline"></nb-icon>{{data?.like_count}}</button>
-          <button nbButton ghost status="danger"><nb-icon icon="heart-outline"></nb-icon>{{data?.dislike_count}}</button>
-          <button nbButton ghost status="primary"><nb-icon [icon]="isOpened ? 'message-circle' : 'message-circle-outline'" (click)="onSelect()"></nb-icon>{{data?.like_count}}</button>
+          <button nbButton ghost status="success"><nb-icon [icon]="data?.is_like === true ? 'heart': 'heart-outline'" (click)="likeBlog(1)"></nb-icon>{{data?.like_count}}</button>
+          <button nbButton ghost status="danger"><nb-icon [icon]="data?.is_like === false ? 'heart': 'heart-outline'" (click)="likeBlog(0)"></nb-icon>{{data?.dislike_count}}</button>
+          <button nbButton ghost status="primary"><nb-icon [icon]="isOpened ? 'message-circle' : 'message-circle-outline'" (click)="onSelect()"></nb-icon>{{data?.comment_count}}</button>
         </div>
       </div>
-      <div class="col-6"></div>
+      <div class="col-6">
+        <div class="row justify-content-end" *ngIf="is_Authorised">
+          <div class="col-auto">
+            <button nbButton ghost status="primary"><nb-icon icon="edit-2-outline"></nb-icon>Edit</button>
+            <button nbButton ghost status="danger"><nb-icon icon="trash-2-outline"></nb-icon>Delete</button>
+          </div>
+        </div>
+      </div>
     </div>
   </nb-card-footer>
 </nb-card>
@@ -75,7 +82,30 @@
       </nb-accordion-item>
       <nb-accordion-item>
         <nb-accordion-item-header>View comments</nb-accordion-item-header>
-        <nb-accordion-item-body></nb-accordion-item-body>
+        <nb-accordion-item-body *ngIf="commentsForm">
+          <form [formGroup]="commentsForm">
+            <ng-container *ngFor="let comment of data?.comments;let i = index">
+              <div class="row mb-2">
+                <div class="col-2">
+                  <div class="row">
+                    <div class="col-auto">
+                      <nb-icon icon="person"></nb-icon>
+                    </div>
+                    <div class="col">
+                      <span>{{comment?.commented_username}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <span><input type="text" nbInput fullWidth fieldSize="small" shape="semi-round" [formControlName]="comment?.id?.toString()"></span>
+                </div>
+                <div class="col">
+                  <button nbButton ghost size="small" status="primary" [disabled]="checkIsEdit(comment?.user_id)" (click)="updateComment(comment?.id)"><nb-icon icon="edit-2"></nb-icon></button>
+                </div>
+              </div>
+            </ng-container>
+          </form>
+        </nb-accordion-item-body>
       </nb-accordion-item>
     </nb-accordion>
   </nb-card-body>
