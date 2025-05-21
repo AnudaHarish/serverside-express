@@ -5,6 +5,8 @@ import {DashboardComponent} from "./layout/dashboard/dashboard.component";
 import {RegistryComponent} from "./layout/registry/registry.component";
 import {CreateBlogComponent} from "./layout/create-blog/create-blog.component";
 import {ViewBlogPostComponent} from "./layout/view-blog-post/view-blog-post.component";
+import {UserFollowerComponent} from "./layout/user-follower/user-follower.component";
+import {ProfileComponent} from "./layout/profile/profile.component";
 
 const routes: Routes = [
   {
@@ -26,6 +28,18 @@ const routes: Routes = [
   },
   {
     path: 'create',
+    component: CreateBlogComponent
+  },
+  {
+    path: 'follower',
+    component: UserFollowerComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+  },
+  {
+    path: 'create/:id',
     component: CreateBlogComponent
   },
   {

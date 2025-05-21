@@ -27,11 +27,23 @@ export class BlogPostService {
     return this.http.post(`${this.baseUrl}/pBlog/create`, data);
   }
 
+  getBlogPostByFollowings():Observable<any> {
+    return this.http.get(`${this.baseUrl}/pBlog/followedBlogs`);
+  }
+
   getBlogPostData(id:any):Observable<any>{
     return this.http.get(`${this.baseUrl}/defaults/blog/${id}`);
   }
 
   getProtectedBlogPostData(id:any):Observable<any>{
     return this.http.get(`${this.baseUrl}/pBlog/blog/${id}`);
+  }
+
+  updateBlog(update:any, id:any):Observable<any> {
+    return this.http.put(`${this.baseUrl}/pBlog/update/${id}`, update);
+  }
+
+  deleteBlogPost(id:any):Observable<any> {
+    return this.http.delete(`${this.baseUrl}/pBlog/delete/${id}`);
   }
 }

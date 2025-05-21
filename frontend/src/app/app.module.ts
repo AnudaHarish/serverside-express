@@ -10,7 +10,7 @@ import {
   NbInputModule,
   NbLayoutModule,
   NbMenuModule, NbSelectModule,
-  NbSidebarModule,
+  NbSidebarModule, NbTabsetModule,
   NbThemeModule, NbToastrModule, NbUserModule,
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
@@ -29,6 +29,8 @@ import {MatSortModule} from "@angular/material/sort";
 import { CreateBlogComponent } from './layout/create-blog/create-blog.component';
 import { ViewBlogPostComponent } from './layout/view-blog-post/view-blog-post.component';
 import {CommonModule} from "@angular/common";
+import { UserFollowerComponent } from './layout/user-follower/user-follower.component';
+import { ProfileComponent } from './layout/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import {CommonModule} from "@angular/common";
     DashboardComponent,
     CreateBlogComponent,
     ViewBlogPostComponent,
+    UserFollowerComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +73,7 @@ import {CommonModule} from "@angular/common";
     NbSelectModule,
     NbAccordionModule,
     CommonModule,
+    NbTabsetModule
   ],
   providers: [
     {

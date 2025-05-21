@@ -91,14 +91,15 @@ const getAllBlogPosts = async (req,res) => {
 const updateBlogPost = async (req,res) => {
     try{
         //get data from the req
-        const {title, content} = req.body;
+        const {title, content, date_of_visit} = req.body;
+        console.log("req.body", req.body)
         const id = req.params.id;
         const user_id = req.user.id;
         //valid required fields
         if(!user_id){
             return res.status(401).json({error: "user not authorized"});
         }
-        if(!title || !content || !id){
+        if(!title || !content || !id || !date_of_visit){
             res.status(400).json({error: "Missing required fields"});
         }
         //check the user has the permission to update
@@ -112,6 +113,7 @@ const updateBlogPost = async (req,res) => {
         const change = await BlogPostDAO.updateBlog(id,{
             title,
             content,
+            date_of_visit
         });
         if(!change){
             return res.status(404).json({error: "Blog post not found"});
@@ -347,6 +349,7 @@ const getBlogPostByIdSQL = async (req, res) => {
                 c.capital AS capital,
                 c.languages AS languages,
                 c.flag AS flag,
+                c.region AS region,
                 u.username AS username
             FROM blog_posts bp
             JOIN countries c ON bp.country_id = c.id
@@ -410,6 +413,34 @@ const getBlogPostByIdSQL = async (req, res) => {
         console.error("Error in getBlogPostByIdSQL", err);
         return res.status(500).json({error: "Internal server error"});
     }
-}
+};
 
-module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost, searchBlogPost, getBlogPostByIdSQL}
+const getFollowedUsersBlogPosts = async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            return res.status(401).json({ error: "User not authorized" });
+        }
+
+        const query = `
+            SELECT bp.id, bp.title, bp.content, bp.created_at, u.username
+            FROM blog_posts bp
+            JOIN user_follows uf ON bp.user_id = uf.following_id
+            JOIN users u ON bp.user_id = u.id
+            WHERE uf.follower_id = ? 
+            ORDER BY bp.created_at DESC;
+        `;
+
+        const blogPosts = await BlogPostDAO.queryAll(query, [userId]);
+        return res.status(200).json({
+            message: "Successfully retrieved a blog post",
+            payload: blogPosts
+        });
+
+    } catch (err) {
+        console.error("Error fetching followed users' blog posts", err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+module.exports = {createBlogPost, getAllBlogPosts, updateBlogPost, getAllBlogPostForUser, getBlogPostById, getAllBlogPostsForCountry, deleteBlogPost, searchBlogPost, getBlogPostByIdSQL, getFollowedUsersBlogPosts}

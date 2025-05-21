@@ -55,11 +55,11 @@ class BlogPostDAO {
 
     //update a blog post
     updateBlog(id, blogData){
-        const {title, content} = blogData;
+        const {title, content, date_of_visit} = blogData;
         return new Promise((resolve, reject) => {
             db.run(
-                "UPDATE blog_posts SET title = ?, content = ? WHERE id = ?",
-                [title, content, id],
+                "UPDATE blog_posts SET title = ?, content = ?, date_of_visit = ? WHERE id = ?",
+                [title, content, date_of_visit, id],
                 function(err){
                     if (err) return reject(err);
                     else resolve(this.changes);

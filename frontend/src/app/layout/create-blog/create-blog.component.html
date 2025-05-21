@@ -2,7 +2,8 @@
   <nb-card-body>
     <div class="row">
       <div class="col">
-        <h4>Create Blog Post</h4>
+        <h4 *ngIf="blogId === ''">Create Blog Post</h4>
+        <h4 *ngIf="blogId !== ''">Edit Blog Post</h4>
       </div>
     </div>
     <form [formGroup]="formData">
@@ -104,11 +105,12 @@
               <button nbButton status="primary">Reset</button>
             </div>
             <div class="col">
-              <button nbButton status="primary" (click)="saveBlog()">Save</button>
+              <button nbButton status="primary" (click)="isEditing ? saveEdit() :saveBlog()">
+                <span *ngIf="!isEditing">Save</span>
+                <span *ngIf="isEditing">Update</span>
+              </button>
             </div>
           </div>
-
-
         </div>
       </div>
     </form>

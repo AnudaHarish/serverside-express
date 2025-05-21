@@ -34,6 +34,7 @@ export class ViewBlogPostComponent implements OnInit {
     private commentService: CommentsService,
     private cdr: ChangeDetectorRef,
     private reactionService: ReactionService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -189,5 +190,25 @@ export class ViewBlogPostComponent implements OnInit {
         this.getData();
       }
     });
+  }
+
+  editBlog(){
+    this.router.navigate(['/create', this.blogId]);
+  }
+
+  deleteBlog(){
+    console.log("workongnkdn",this.blogId);
+    this.blogPostService.deleteBlogPost(this.blogId).subscribe({
+      error: error => {
+        console.error(error);
+        if(error.error === 'Access token expired'){
+          this.utilityService.openPopup();
+        }
+      },
+      next: res => {
+        this.router.navigateByUrl("/dashboard");
+        this.showToast("success", "Blog post deleted", "Success");
+      }
+    })
   }
 }

@@ -25,6 +25,11 @@ export class AppComponent implements OnInit {
       icon: 'book-outline',
       link: '/create',
     },
+    {
+      title: 'Community',
+      icon: 'people-outline',
+      link: '/follower',
+    },
   ];
   items = [
     {title: "Login"},
@@ -66,6 +71,7 @@ export class AppComponent implements OnInit {
             this.router.navigateByUrl("register");
             break;
           case("Profile"):
+            this.router.navigateByUrl("profile");
             break;
           case("Logout"):
             this.logout();

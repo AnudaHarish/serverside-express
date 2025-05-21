@@ -82,7 +82,7 @@ const followUser = async (req, res) => {
     try{
         //get user
         const follower_id = req.user?.id;
-        const following_id = req.params?.id;
+        const {following_id} = req.body;
         //validate user
         if(!follower_id){
             return res.status(401).json({error: "user not authorised"});
@@ -139,6 +139,79 @@ const unfollowUser = async (req, res) => {
         console.error("Error following user ", err);
         return res.status(500).json({error: "Internal server error"});
     }
-}
+};
 
-module.exports = {getFollowerList, getFollowingList, followUser, unfollowUser}
+const getFollowersByUsername = async (req, res) => {
+    try {
+        const {username} = req.query;
+        if(!username){
+            return res.status(400).json({error: "Username is required"});
+        }
+        const followerQuery = `
+                SELECT u.id, u.username, uf.followed_at
+                FROM user_follows uf
+                JOIN users u ON uf.follower_id = u.id
+                WHERE (? IS NULL OR u.username LIKE ?);
+        `;
+
+        const followers = await UserFollowerDAO.queryAll(followerQuery, [`%${username}%`]);
+        res.status(200).json({
+            message: "Followers were found",
+            payload: followers
+        });
+    }catch(err){
+        console.error("Error getting following user", err);
+        return res.status(500).json({error: "Internal server error"});
+    }
+};
+
+const getFollowingsByUsername = async (req, res) => {
+    try {
+        const {username} = req.query;
+        if(!username){
+            return res.status(400).json({error: "Username is required"});
+        }
+        const followerQuery = `
+                SELECT u.id, u.username, uf.followed_at
+                FROM user_follows uf
+                JOIN users u ON uf.following_id = u.id
+                WHERE (? IS NULL OR u.username LIKE ?);
+        `;
+
+        const followings = await UserFollowerDAO.queryAll(followerQuery, [`%${username}%`]);
+        res.status(200).json({
+            message: "Followings were found",
+            payload: followings
+        });
+    }catch(err){
+        console.error("Error getting following user", err);
+        return res.status(500).json({error: "Internal server error"});
+    }
+};
+
+const getUsersNotFollowed = async (req, res) => {
+    try {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({ error: "User not authorized" });
+        }
+
+        const query = `
+            SELECT u.id, u.username
+            FROM users u
+            LEFT JOIN user_follows uf ON u.id = uf.following_id AND uf.follower_id = ?
+            WHERE uf.following_id IS NULL;
+        `;
+
+        const usersNotFollowed = await UserFollowerDAO.queryAll(query, [userId]);
+        return res.status(200).json({
+            message: "Followings were found",
+            payload: usersNotFollowed
+        });
+    } catch (err) {
+        console.error("Error fetching users not followed", err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+module.exports = {getFollowerList, getFollowingList, followUser, unfollowUser, getFollowingsByUsername, getFollowersByUsername, getUsersNotFollowed}

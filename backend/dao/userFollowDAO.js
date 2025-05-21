@@ -6,7 +6,7 @@ class UserFollowDAO {
     follow(follow_id, following_id){
         return new Promise((resolve, reject) => {
             db.run(
-                "INSERT INTO user_follows (follow_id, following_id) VALUES (?,?)",
+                "INSERT INTO user_follows (follower_id, following_id) VALUES (?,?)",
                 [follow_id, following_id],
                 function(err){
                     if(err) return reject(err);
@@ -50,6 +50,33 @@ class UserFollowDAO {
             db.all(
                 "SELECT * FROM user_follows WHERE follower_id = ? ",
                 [follower_id],
+                (err, rows) => {
+                    if (err) return reject(err);
+                    else resolve(rows);
+                }
+            );
+        });
+    }
+
+    //dynamic filter
+    queryOne(query, params){
+        return new Promise((resolve, reject) => {
+            db.get(
+                query,
+                params,
+                (err, row) => {
+                    if (err) return reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+    }
+
+    queryAll(query, params){
+        return new Promise((resolve, reject) => {
+            db.all(
+                query,
+                params,
                 (err, rows) => {
                     if (err) return reject(err);
                     else resolve(rows);

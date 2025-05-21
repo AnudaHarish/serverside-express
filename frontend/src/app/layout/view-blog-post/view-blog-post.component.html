@@ -53,8 +53,8 @@
       <div class="col-6">
         <div class="row justify-content-end" *ngIf="is_Authorised">
           <div class="col-auto">
-            <button nbButton ghost status="primary"><nb-icon icon="edit-2-outline"></nb-icon>Edit</button>
-            <button nbButton ghost status="danger"><nb-icon icon="trash-2-outline"></nb-icon>Delete</button>
+            <button nbButton ghost status="primary"><nb-icon icon="edit-2-outline" (click)="editBlog()"></nb-icon>Edit</button>
+            <button nbButton ghost status="danger"><nb-icon icon="trash-2-outline" (click)="deleteBlog()"></nb-icon>Delete</button>
           </div>
         </div>
       </div>

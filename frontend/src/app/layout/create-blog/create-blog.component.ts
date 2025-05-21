@@ -8,6 +8,8 @@ import {NbDialogService, NbGlobalPhysicalPosition, NbToastrService} from "@nebul
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {blogPostData} from "../../shared/models/blogPost";
 import {BlogPostService} from "../../service/blog-post.service";
+import {UtilityService} from "../../service/utility.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-create-blog',
@@ -28,6 +30,11 @@ export class CreateBlogComponent implements OnInit {
   isVisible: boolean = false;
   position = NbGlobalPhysicalPosition;
   formData: FormGroup<any> = this.fb.group({});
+  blogId: string = '';
+  userId: string = '';
+  username: string = '';
+  data:any = null;
+  isEditing: boolean = false;
 
   constructor(
     private sessionStorage: SessionStorageService,
@@ -37,10 +44,16 @@ export class CreateBlogComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private fb: FormBuilder,
     private blogpostService: BlogPostService,
+    private utilityService: UtilityService,
+    private route: ActivatedRoute,
+    private blogPostService: BlogPostService,
   ) { }
 
   ngOnInit(): void {
     this.initiateForm();
+    this.route.paramMap.subscribe(param => {
+        this.blogId = param.get('id') || '';
+    });
     this.options = this.sessionStorage.getItem("nameList") || ['option 1', 'option 2', 'option 3', 'option 4'];
     this.filteredControlOptions$ = of(this.options);
     this.filteredControlOptions$ = this.countryName.valueChanges
@@ -48,6 +61,16 @@ export class CreateBlogComponent implements OnInit {
         startWith(''),
         map(filterString => this.filter(filterString)),
       );
+    const needCheck = this.utilityService.isAvailable();
+    if (needCheck) {
+      this.utilityService.checkAuth();
+    }
+    this.userId = this.sessionStorage.getItem("travelT_id");
+    this.username = this.sessionStorage.getItem("travelT_username");
+    console.log("this.blogId", this.blogId);
+    if(this.blogId !== ''){
+      this.getData();
+    }
   }
 
   private filter(value: string) {
@@ -65,7 +88,7 @@ export class CreateBlogComponent implements OnInit {
       error: err => {
         console.log(err)
         if(err?.error === 'Access token expired'){
-          this.openPopup();
+          this.utilityService.openPopup();
         }
         this.showToast("danger", "Error while fetching country details", "Error");
         this.isVisible = false;
@@ -100,7 +123,7 @@ export class CreateBlogComponent implements OnInit {
       title: [''],
       content: [''],
       country: [''],
-      date: [new Date()]
+      date: [''],
     });
   }
 
@@ -132,7 +155,89 @@ export class CreateBlogComponent implements OnInit {
       next: (res) => {
         console.log(res)
       }
+    });
+  }
+
+  getData(){
+    if(!this.blogId){
+      this.showToast("danger", "Blog post id not found", "Error");
+    }
+    let fetchMethod = this.blogPostService.getBlogPostData(this.blogId);
+    if(this.username || this.userId){
+      fetchMethod = this.blogPostService.getProtectedBlogPostData(this.blogId);
+    }
+    fetchMethod.subscribe({
+      error: error => {
+        console.error(error);
+        this.showToast("danger", "Blog post not found", "Error");
+      },
+      next: res => {
+        console.log(res);
+        this.data = null;
+        this.data = res.payload;
+        // this.is_Authorised = !this.checkIsEdit(this.data?.user_id);
+        // this.commentsForm.reset();
+        // this.initiateFormGroup();
+        // this.cdr.detectChanges();
+        this.editWorkflow();
+      }
     })
+  }
+
+  editWorkflow(){
+    this.isEditing = this.blogId !== '';
+    this.setFormData();
+    this.countryData.region = this.data.region;
+    this.countryData.name = this.data.country_name;
+    this.countryData.languages = JSON.parse(this.data.languages);
+    this.countryData.capital = this.data.capital;
+    this.countryData.flag = this.data.flag;
+    this.countryData.currency = this.data.currency;
+    this.isVisible = true;
+    console.log(this.formData.value);
+    this.countryName.disable();
+    this.cd.detectChanges();
+  }
+
+  setFormData(){
+    this.formData.patchValue({
+      title: [this.data?.title],
+      content: [this.data?.content],
+      date: [ new Date(this.data?.date_of_visit)],
+      country: [this.data?.country_name],
+    })
+  }
+
+  formatDate(date:string){
+    return new Date(Date.UTC(
+      new Date(date).getFullYear(),
+      new Date(date).getMonth(),
+      new Date(date).getDate()
+    ));
+  }
+
+  forceLocalDate(dateString: string): Date {
+    const parts = dateString.split("-");
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  }
+
+  saveEdit(){
+      const update = {
+        title: this.formData.value.title,
+        content: this.formData.value.content,
+        date_of_visit: new Date(this.data?.date_of_visit).toISOString().substr(0, 10),
+      }
+      this.blogPostService.updateBlog(update, this.blogId).subscribe({
+        error: err => {
+          if(err?.error === 'Access token expired'){
+            this.utilityService.openPopup();
+            this.showToast("danger", "Blog post not found", "Error");
+          }
+        },
+        next: res => {
+          this.showToast("success", "Blog post updated", "Success");
+        }
+      })
   }
 
 }
