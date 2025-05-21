@@ -7,6 +7,7 @@ import {CreateBlogComponent} from "./layout/create-blog/create-blog.component";
 import {ViewBlogPostComponent} from "./layout/view-blog-post/view-blog-post.component";
 import {UserFollowerComponent} from "./layout/user-follower/user-follower.component";
 import {ProfileComponent} from "./layout/profile/profile.component";
+import {SettingsComponent} from "./layout/settings/settings.component";
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
+  },
+  {
+    path: 'setting',
+    component: SettingsComponent
   },
   {
     path: 'create/:id',

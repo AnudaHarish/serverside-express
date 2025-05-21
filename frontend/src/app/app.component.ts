@@ -30,6 +30,11 @@ export class AppComponent implements OnInit {
       icon: 'people-outline',
       link: '/follower',
     },
+    {
+      title: 'Settings',
+      icon: 'settings-2-outline',
+      link: '/setting',
+    }
   ];
   items = [
     {title: "Login"},

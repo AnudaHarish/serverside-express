@@ -31,6 +31,7 @@ import { ViewBlogPostComponent } from './layout/view-blog-post/view-blog-post.co
 import {CommonModule} from "@angular/common";
 import { UserFollowerComponent } from './layout/user-follower/user-follower.component';
 import { ProfileComponent } from './layout/profile/profile.component';
+import { SettingsComponent } from './layout/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { ProfileComponent } from './layout/profile/profile.component';
     ViewBlogPostComponent,
     UserFollowerComponent,
     ProfileComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

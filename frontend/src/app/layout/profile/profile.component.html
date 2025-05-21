@@ -1,18 +1,92 @@
-<nb-card>
-  <nb-card-body>
-    <nb-tabset>
-      <nb-tab tabTitle="followers"
-              badgeText="100"
-              badgeStatus="primary"
-      >
-        <p><Strong>Followers</Strong></p>
-      </nb-tab>
-      <nb-tab tabTitle="followings"
-              badgeText="100"
-              badgeStatus="primary"
-      >
-        <p><Strong>Followings</Strong></p>
-      </nb-tab>
-    </nb-tabset>
-  </nb-card-body>
-</nb-card>
+<div class="row">
+  <div class="col-7">
+    <nb-card status="info">
+      <nb-card-header>
+        <span>User Profile</span>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row justify-content-end">
+          <div class="col-auto">
+            <button nbButton ghost status="primary"><nb-icon icon="edit-2-outline" (click)="editUser()"></nb-icon></button>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-auto">
+            <nb-user color="#ccc" size="giant" shape="rectangle" name="{{userDetail?.username}}" title="" showTitle="false" showName="false"></nb-user>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-auto">
+            <span>{{userDetail?.username}}</span>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-auto mt-1">
+            <span>{{userDetail?.email}}</span>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                <span class="my-text">Followers:</span>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                <span class="count_text">{{followerList.length}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                <span class="my-text">Followings:</span>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                <span class="count_text">{{followingList.length}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-5">
+    <nb-card>
+      <nb-card-body>
+        <nb-tabset>
+          <nb-tab tabTitle="followers"
+                  badgeText="{{followerList.length}}"
+                  badgeStatus="primary"
+          >
+            <ng-container *ngFor="let user of followerList">
+              <div class="row">
+                <div class="col">
+                  <nb-user name="{{user?.follower_data?.username}}" title="" showTitle="false"></nb-user>
+                </div>
+              </div>
+            </ng-container>
+          </nb-tab>
+          <nb-tab tabTitle="followings"
+                  badgeText="{{followingList.length}}"
+                  badgeStatus="primary"
+          >
+            <ng-container *ngFor="let user of followingList">
+              <div class="row pb-2">
+                <div class="col">
+                  <nb-user shape="round" name="{{user?.followingData?.username}}" title="" showTitle="false"></nb-user>
+                </div>
+                <div class="col-auto pt-2">
+                  <button nbButton status="primary" size="small" (click)="unfollowUser(user?.following_id)"><nb-icon icon="eye-off-outline"></nb-icon>Unfollow</button>
+                </div>
+              </div>
+            </ng-container>
+          </nb-tab>
+        </nb-tabset>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
