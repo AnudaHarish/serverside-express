@@ -5,10 +5,10 @@ const bcrypt = require("bcrypt");
 
 const createUser = async (req, res) => {
     try {
-        const {name, psw, email} = req.body;
+        const {username, email, new_password} = req.body;
 
         //check both name and psw exist
-        if (!name || !psw || !email) return res.status(400).json({"message": "Username and Password are required"});
+        if (username === '' || email === '' || new_password === '') return res.status(400).json({"message": "Username and Password are required"});
 
         //check username already exist
         // const rows = await UserDAO.getAllUsers();
@@ -20,16 +20,16 @@ const createUser = async (req, res) => {
         }
 
         //create hashed password
-        const hashedPsw = await bcrypt.hash(psw, 10);
+        const hashedPsw = await bcrypt.hash(new_password, 10);
 
         //create user
         const userData = {
-            "username": name,
+            "username": username,
             "password": hashedPsw,
             "email": email
         }
         await UserDAO.createUser(userData);
-        return res.status(201).json({"message":`user ${name} created successfully.`});
+        return res.status(201).json({"message":`user ${username} created successfully.`});
     } catch (err) {
         console.log("Error was occurred: ", err);
         res.status(500).json({

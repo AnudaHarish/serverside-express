@@ -18,6 +18,12 @@
         </div>
         <div class="col">
           <input type="email" nbInput fullWidth fieldSize="small" formControlName="email">
+          <span *ngIf="formGroup.get('email')?.hasError('required') && formGroup.get('email')?.touched" class="error">
+            Email is required
+          </span>
+          <span *ngIf="formGroup.get('email')?.hasError('email') && formGroup.get('email')?.touched" class="error">
+            Invalid email format
+          </span>
         </div>
       </div>
       <div class="row mt-3">

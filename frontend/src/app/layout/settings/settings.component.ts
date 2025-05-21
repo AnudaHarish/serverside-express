@@ -3,7 +3,7 @@ import {UtilityService} from "../../service/utility.service";
 import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 import {SessionStorageService} from "../../service/session-storage.service";
 import {UserService} from "../../service/user.service";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {preserveWhitespacesDefault} from "@angular/compiler";
 import {AuthInterceptor} from "../../interceptors/auth.interceptor";
 import {Router} from "@angular/router";
@@ -63,7 +63,7 @@ export class SettingsComponent implements OnInit {
   initialisingForm(){
     this.formGroup = new FormGroup({
       username: new FormControl(''),
-      email: new FormControl(''),
+      email: new FormControl('',[Validators.required, Validators.email]),
       pre_password: new FormControl(''),
       new_password: new FormControl(''),
       con_password: new FormControl(''),
@@ -96,7 +96,16 @@ export class SettingsComponent implements OnInit {
         this.showToast("danger", "New password or Confirm password mismatch", "Error");
         return;
       }
+    }else if(!this.formGroup.valid){
+      this.showToast("danger", "Email is not valid", "Error");
+      return;
     }
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(formValue.email)) {
+      this.showToast("danger", "Invalid email format", "Error");
+      return;
+    }
+    console.log(this.formGroup)
     const updateObj = {
       username: username,
       email: email,
@@ -104,7 +113,6 @@ export class SettingsComponent implements OnInit {
       con_password: con_password,
       new_password: new_password,
     }
-
     this.userService.updateUser(updateObj).subscribe({
       error: err => {
         console.log(err);
