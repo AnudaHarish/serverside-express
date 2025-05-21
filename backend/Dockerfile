@@ -14,7 +14,11 @@ COPY . .
 #execute any command with run
 RUN npm install
 
+# Ensure SQLite database file is correctly stored
+RUN mkdir -p /app/database
+VOLUME /app/database
+
 EXPOSE 3500
 
 #executing the application when container start
-CMD ["node","server.js"]
+CMD ["node","start"]

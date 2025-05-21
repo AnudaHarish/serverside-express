@@ -8,6 +8,7 @@ import {ViewBlogPostComponent} from "./layout/view-blog-post/view-blog-post.comp
 import {UserFollowerComponent} from "./layout/user-follower/user-follower.component";
 import {ProfileComponent} from "./layout/profile/profile.component";
 import {SettingsComponent} from "./layout/settings/settings.component";
+import {AuthGuard} from "./authGuard/auth.guard";
 
 const routes: Routes = [
   {
@@ -29,59 +30,37 @@ const routes: Routes = [
   },
   {
     path: 'create',
-    component: CreateBlogComponent
+    component: CreateBlogComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'follower',
-    component: UserFollowerComponent
+    component: UserFollowerComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'profile',
     component: ProfileComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'setting',
-    component: SettingsComponent
+    component: SettingsComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'create/:id',
-    component: CreateBlogComponent
+    component: CreateBlogComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'view/:id',
     component: ViewBlogPostComponent
   },
-
-  // {
-  //   path: '',
-  //   component: AuthLayoutComponent,
-  //   children: [
-  //     {
-  //       path: 'login',
-  //       component: LoginComponent,
-  //       canActivate: [LoggedGuard]
-  //     },
-  //     {
-  //       path: 'registry',
-  //       component: RegistryComponent,
-  //       canActivate: [LoggedGuard]
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '',
-  //   component: LayoutComponent,
-  //   canActivate: [AuthGuard],
-  //   children: [
-  //     {
-  //       path: 'dashboard',
-  //       component: DashboardComponent,
-  //     }
-  //   ],
-  // },
   {
     path: '**',
     redirectTo: 'dashboard',
+    pathMatch: 'full'
   }
 ];
 

@@ -6,13 +6,13 @@ LABEL authors="anudaharishchandra"
 #working directoty for the container
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
 
 #copy all the files
 COPY . .
 
 #execute any command with run
-RUN npm run build -- --configuration=production --base-href=/
+RUN npm run build --prod
 
 #serve the application using nginx
 FROM nginx:1.25-alpine

@@ -100,7 +100,7 @@ const updateBlogPost = async (req,res) => {
             return res.status(401).json({error: "user not authorized"});
         }
         if(!title || !content || !id || !date_of_visit){
-            res.status(400).json({error: "Missing required fields"});
+            return res.status(400).json({error: "Missing required fields"});
         }
         //check the user has the permission to update
         const postData = await BlogPostDAO.getById(id);

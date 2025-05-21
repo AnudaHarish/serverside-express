@@ -20,7 +20,12 @@
         <span class="text-content">{{data?.content}}</span>
       </div>
     </div>
-    <div class="row mt-3 border p-3">
+    <div class="row mt-3 justify-content-end">
+      <div class="col-auto">
+        <h6 class="text-content">Date of visit: {{data?.date_of_visit}}</h6>
+      </div>
+    </div>
+    <div class="row mt-4 border p-3">
       <div class="row">
         <h6>Country Info</h6>
       </div>
@@ -47,14 +52,14 @@
         <div class="col">
           <button nbButton ghost status="success" [disabled]="!userId"><nb-icon [icon]="data?.is_like === true ? 'heart': 'heart-outline'" (click)="likeBlog(1)"></nb-icon>{{data?.like_count}}</button>
           <button nbButton ghost status="danger" [disabled]="!userId"><nb-icon [icon]="data?.is_like === false ? 'heart': 'heart-outline'" (click)="likeBlog(0)"></nb-icon>{{data?.dislike_count}}</button>
-          <button nbButton ghost status="primary"><nb-icon [icon]="isOpened ? 'message-circle' : 'message-circle-outline'" (click)="onSelect()"></nb-icon>{{data?.comment_count}}</button>
+          <button nbButton ghost status="primary" (click)="onSelect()"><nb-icon [icon]="isOpened ? 'message-circle' : 'message-circle-outline'"></nb-icon>{{data?.comment_count}}</button>
         </div>
       </div>
       <div class="col-6">
         <div class="row justify-content-end" *ngIf="is_Authorised">
           <div class="col-auto">
-            <button nbButton ghost status="primary"><nb-icon icon="edit-2-outline" (click)="editBlog()"></nb-icon>Edit</button>
-            <button nbButton ghost status="danger"><nb-icon icon="trash-2-outline" (click)="deleteBlog()"></nb-icon>Delete</button>
+            <button nbButton ghost status="primary" (click)="editBlog()"><nb-icon icon="edit-2-outline"></nb-icon>Edit</button>
+            <button nbButton ghost status="danger" (click)="deleteBlog()"><nb-icon icon="trash-2-outline"></nb-icon>Delete</button>
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
 <nb-layout>
-
-  <nb-layout-header subheader>
-    <div class="row">
-
-      <div class="col" style="display: flex; justify-content: end">
+  <nb-layout-header subheader style="background-color: #d8d5d5">
+    <div class="row justify-content-end">
+      <div class="col-auto pt-1">
+        <h4>TravelTales</h4>
+      </div>
+      <div class="col-auto">
         <nb-user  name= "{{username}}"
                   title= ""
                   [nbContextMenu]="isLoggIn ? items2 : items"
@@ -14,16 +15,15 @@
   </nb-layout-header>
   <nb-sidebar *ngIf="isLoggIn" class="custom-sidebar">
     <div class="toggle-btn-container">
-      <button nbButton ghost (click)="toggleSidebar()">
+      <button nbButton ghost (click)="toggleSidebar()" status="info">
         <nb-icon icon="menu-outline"></nb-icon>
       </button>
     </div>
-    <!-- Add sidebar header -->
     <div class="sidebar-header">
       <nb-card class="sidebar-user-card">
         <nb-card-body>
           <div class="user-info">
-            <h5 class="user-name">TravelTales</h5> <!-- Bind to your user data -->
+            <h5 class="user-name">TravelTales</h5>
           </div>
         </nb-card-body>
       </nb-card>
@@ -34,8 +34,6 @@
     <router-outlet></router-outlet>
   </nb-layout-column>
   <nb-layout-footer fixed>
-    <!-- Insert footer here -->
+<!--   <span>By Anuda Harishchandra</span>-->
   </nb-layout-footer>
-
 </nb-layout>
-

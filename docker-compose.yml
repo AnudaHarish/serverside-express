@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend_container
+    ports:
+      - "3500:3500"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/db:/app/database
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
