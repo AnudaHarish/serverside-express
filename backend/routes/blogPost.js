@@ -4,11 +4,13 @@ const BlogPostController = require('../controller/blogPostController');
 
 //create blog post
 router.post("/create", BlogPostController.createBlogPost);
-
+router.get("/followedBlogs", BlogPostController.getFollowedUsersBlogPosts);
 //get all blog posts
 router.get("/all", BlogPostController.getAllBlogPosts);
 //get all blog for one user
 router.get("/userBlogs", BlogPostController.getAllBlogPostForUser);
+//get by id
+router.get("/blog/:id", BlogPostController.getBlogPostByIdSQL)
 //get all blogs for selected country
 router.get("/country/:id", BlogPostController.getAllBlogPostsForCountry);
 //update

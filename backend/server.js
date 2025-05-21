@@ -52,6 +52,8 @@ app.get("/api", (req,res) => {
 app.use("/api/pBlog", require("./routes/blogPost"));
 app.use("/api/countries", require("./routes/countries"));
 app.use("/api/react", require("./routes/userReaction"));
+app.use("/api/comments", require("./routes/comments"));
+app.use("/api/follow", require("./routes/followerfollowing"));
 
 // app.all("*", (req,res) => {
 //     res.status(404)

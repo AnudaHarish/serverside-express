@@ -1,0 +1,67 @@
+<!--<div class="row justify-content-between">-->
+<!--  <div class="col">-->
+<!--    <input-->
+<!--      nbInput-->
+<!--      type="text"-->
+<!--      [formControl]="usernameControl"-->
+<!--      placeholder="Search username"-->
+<!--      [nbAutocomplete]="autoControl2"-->
+<!--      fieldSize="small">-->
+<!--    <nb-autocomplete #autoControl2>-->
+<!--      <nb-option *ngFor="let option of filteredControlOptions$ | async" [value]="option">-->
+<!--        {{ option }}-->
+<!--      </nb-option>-->
+<!--    </nb-autocomplete>-->
+<!--  </div>-->
+<!--  <div class="col">-->
+<!--    <nb-select [formControl]="pageControl" size="small" (selectedChange)="pageSizeChange()">-->
+<!--      <nb-option value="10">10</nb-option>-->
+<!--      <nb-option value="20">20</nb-option>-->
+<!--      <nb-option value="50">50</nb-option>-->
+<!--    </nb-select>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="row">
+  <div class="col-4">
+    <nb-card status="info">
+      <nb-card-header>
+        <span>Follow users</span>
+      </nb-card-header>
+      <nb-card-body>
+        <div *ngFor="let user of userList" class="row mb-2 border p-2">
+          <div class="col">
+            <ng-container>
+              <nb-user shape="round" name="{{user?.username}}" title="" showTitle="false"></nb-user>
+            </ng-container>
+          </div>
+          <div class="col">
+            <button nbButton status="primary" size="small" (click)="followUser(user?.id)"><nb-icon icon="eye-outline"></nb-icon>Follow</button>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-8">
+    <nb-card status="info">
+      <nb-card-header>
+        <span>Blogs By Following</span>
+      </nb-card-header>
+      <nb-card-body>
+        <ng-container *ngFor="let blog of blogList">
+          <div class="row pt-2">
+            <div class="col align-content-center">
+              <nb-user shape="round" name="{{blog?.username}}" title="" showTitle="false"></nb-user>
+            </div>
+            <div class="col align-content-center">
+              <span>{{blog?.title}}</span>
+            </div>
+            <div class="col align-content-center">
+              <button nbButton status="primary" size="small"><nb-icon icon="eye-outline" (click)="navigateView(blog?.id)"></nb-icon>View</button>
+            </div>
+          </div>
+        </ng-container>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

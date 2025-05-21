@@ -8,7 +8,9 @@ const addingReaction = async (req, res) => {
         const user_id = req.user?.id;
         const blog_post_id = req.params.id;
         //get blog_post_id, is_like
-        const {is_like} = req.body;
+        let {is_like} = req.body;
+        // is_like = JSON.parse(is_like);
+        console.log("req",req.body)
         //validate inputs
         if(!user_id){
             return res.status(401).json({error: "User not authorized"});
@@ -20,9 +22,9 @@ const addingReaction = async (req, res) => {
         if(!postData){
             return res.status(404).json({error: "Could not find post"});
         }
-        if(postData.user_id !== user_id){
-            return res.status(403).json({error: "User has not the permission"});
-        }
+        // if(postData.user_id !== user_id){
+        //     return res.status(403).json({error: "User has not the permission"});
+        // }
         //add the user reaction
         const index = await UserReactionDAO.like(blog_post_id, user_id, is_like);
 
@@ -58,9 +60,9 @@ const removeReaction = async (req, res) => {
         if(!postData){
             return res.status(404).json({error: "Could not find post"});
         }
-        if(postData.user_id !== user_id){
-            return res.status(403).json({error: "User has not the permission"});
-        }
+        // if(postData.user_id !== user_id){
+        //     return res.status(403).json({error: "User has not the permission"});
+        // }
         const change = await UserReactionDAO.removeReaction(blog_post_id, user_id);
         if(!change){
             return res.status(404).json({error: "Error in removing the reaction"});
@@ -150,9 +152,9 @@ const updateReaction = async (req, res) => {
         if(!postData){
             return res.status(404).json({error: "Could not find post"});
         }
-        if(postData.user_id !== user_id){
-            return res.status(403).json({error: "User has not the permission"});
-        }
+        // if(postData.user_id !== user_id){
+        //     return res.status(403).json({error: "User has not the permission"});
+        // }
         const change = await UserReactionDAO.updateReaction(blog_post_id, user_id, is_like);
         if(!change){
             return res.status(404).json({error: "Error in update the reaction"});

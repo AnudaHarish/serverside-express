@@ -4,13 +4,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import {
+  NbAccordionModule,
   NbAutocompleteModule,
-  NbButtonModule, NbCardModule, NbContextMenuModule, NbDialogModule, NbIconModule,
+  NbButtonModule, NbCardModule, NbContextMenuModule, NbDatepickerModule, NbDialogModule, NbIconModule,
   NbInputModule,
   NbLayoutModule,
-  NbMenuModule,
-  NbSidebarModule,
-  NbThemeModule, NbToastrModule, NbUserModule
+  NbMenuModule, NbSelectModule,
+  NbSidebarModule, NbTabsetModule,
+  NbThemeModule, NbToastrModule, NbUserModule,
 } from "@nebular/theme";
 import {NbEvaIconsModule} from "@nebular/eva-icons";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,6 +23,14 @@ import { SmartTableComponent } from './tables/smart-table/smart-table.component'
 import {RegistryComponent} from "./layout/registry/registry.component";
 import {LoginComponent} from "./layout/login/login.component";
 import {DashboardComponent} from "./layout/dashboard/dashboard.component";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
+import { CreateBlogComponent } from './layout/create-blog/create-blog.component';
+import { ViewBlogPostComponent } from './layout/view-blog-post/view-blog-post.component';
+import {CommonModule} from "@angular/common";
+import { UserFollowerComponent } from './layout/user-follower/user-follower.component';
+import { ProfileComponent } from './layout/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +40,10 @@ import {DashboardComponent} from "./layout/dashboard/dashboard.component";
     RegistryComponent,
     LoginComponent,
     DashboardComponent,
+    CreateBlogComponent,
+    ViewBlogPostComponent,
+    UserFollowerComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,13 +66,21 @@ import {DashboardComponent} from "./layout/dashboard/dashboard.component";
     NbContextMenuModule,
     NbDialogModule.forRoot(),
     ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    NbDatepickerModule.forRoot(),
+    NbSelectModule,
+    NbAccordionModule,
+    CommonModule,
+    NbTabsetModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
   ],
   exports: [
     SmartTableComponent
