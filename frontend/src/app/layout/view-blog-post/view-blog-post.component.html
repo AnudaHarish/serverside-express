@@ -37,7 +37,7 @@
       <div class="row">
         <div class="col"><span class="text-dark text-size">Capital:</span> {{data?.capital}}</div>
         <div class="col"><span class="text-dark text-size">Currency:</span> {{data?.currency}}</div>
-        <div class="col"><span class="text-dark text-size">Languages:</span> {{data?.languages}}</div>
+        <div class="col"><span class="text-dark text-size">Languages:</span> {{formatJSON(data?.languages)}}</div>
       </div>
     </div>
   </nb-card-body>
@@ -45,8 +45,8 @@
     <div class="row justify-content-start">
       <div class="col-6">
         <div class="col">
-          <button nbButton ghost status="success"><nb-icon [icon]="data?.is_like === true ? 'heart': 'heart-outline'" (click)="likeBlog(1)"></nb-icon>{{data?.like_count}}</button>
-          <button nbButton ghost status="danger"><nb-icon [icon]="data?.is_like === false ? 'heart': 'heart-outline'" (click)="likeBlog(0)"></nb-icon>{{data?.dislike_count}}</button>
+          <button nbButton ghost status="success" [disabled]="!userId"><nb-icon [icon]="data?.is_like === true ? 'heart': 'heart-outline'" (click)="likeBlog(1)"></nb-icon>{{data?.like_count}}</button>
+          <button nbButton ghost status="danger" [disabled]="!userId"><nb-icon [icon]="data?.is_like === false ? 'heart': 'heart-outline'" (click)="likeBlog(0)"></nb-icon>{{data?.dislike_count}}</button>
           <button nbButton ghost status="primary"><nb-icon [icon]="isOpened ? 'message-circle' : 'message-circle-outline'" (click)="onSelect()"></nb-icon>{{data?.comment_count}}</button>
         </div>
       </div>
@@ -62,12 +62,11 @@
   </nb-card-footer>
 </nb-card>
 <!--  comment section-->
-<!--*ngIf="isOpened"-->
-<nb-card>
+<nb-card *ngIf="isOpened">
   <nb-card-header>Comments</nb-card-header>
   <nb-card-body>
     <nb-accordion multi>
-      <nb-accordion-item>
+      <nb-accordion-item *ngIf="userId">
         <nb-accordion-item-header>Add comments</nb-accordion-item-header>
         <nb-accordion-item-body>
           <div class="row">

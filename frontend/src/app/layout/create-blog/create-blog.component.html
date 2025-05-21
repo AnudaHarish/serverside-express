@@ -1,9 +1,13 @@
-<nb-card>
+<nb-card status="info">
+  <nb-card-header>
+    <span *ngIf="blogId === ''">Create Blog Post</span>
+    <span *ngIf="blogId !== ''">Edit Blog Post</span>
+  </nb-card-header>
   <nb-card-body>
     <div class="row">
       <div class="col">
-        <h4 *ngIf="blogId === ''">Create Blog Post</h4>
-        <h4 *ngIf="blogId !== ''">Edit Blog Post</h4>
+<!--        <h4 *ngIf="blogId === ''">Create Blog Post</h4>-->
+<!--        <h4 *ngIf="blogId !== ''">Edit Blog Post</h4>-->
       </div>
     </div>
     <form [formGroup]="formData">

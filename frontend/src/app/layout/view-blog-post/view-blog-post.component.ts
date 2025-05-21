@@ -85,8 +85,8 @@ export class ViewBlogPostComponent implements OnInit {
   }
 
   sendComment(){
-    console.log("value",this.commentsControl.value);
     if(!this.commentsControl.value){
+      this.showToast("Error", "Pl add a comment", "Error");
       return;
     }
     this.commentService.addComment(this.commentsControl.value, this.blogId).subscribe({
@@ -95,8 +95,10 @@ export class ViewBlogPostComponent implements OnInit {
         if(error.error === 'Access token expired'){
           this.utilityService.openPopup();
         }
+        this.showToast("Error", error.error, "Error");
       },
       next: res => {
+        this.showToast("Success","Added", "Success");
         this.commentsControl.reset();
         this.getData();
       }
@@ -127,12 +129,15 @@ export class ViewBlogPostComponent implements OnInit {
           if(error.error === 'Access token expired'){
             this.utilityService.openPopup();
           }
+          this.showToast("Error", error.error, "Error");
         },
         next: res => {
+          this.showToast("Success","Updated", "Success");
           this.getData();
         }
       });
     }
+    this.showToast("Error", "Pl add a comment", "Error");
   }
 
   likeBlog(react:number){
@@ -210,5 +215,9 @@ export class ViewBlogPostComponent implements OnInit {
         this.showToast("success", "Blog post deleted", "Success");
       }
     })
+  }
+
+  formatJSON(data:any):any{
+    return JSON.parse(data);
   }
 }
