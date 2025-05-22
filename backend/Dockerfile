@@ -21,4 +21,4 @@ VOLUME /app/database
 EXPOSE 3500
 
 #executing the application when container start
-CMD ["node","start"]
+CMD ["node","server.js"]

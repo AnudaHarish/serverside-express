@@ -5,6 +5,8 @@ import {AuthService} from "../service/auth.service";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {jwtDecode} from "jwt-decode";
+import {SessionExpiredComponent} from "../layout/popup/session-expired/session-expired.component";
+import {NbDialogService} from "@nebular/theme";
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +16,7 @@ export class AuthGuard implements CanActivate {
     private authService: AuthService,
     private router: Router,
     private http: HttpClient,
+    private dialogService: NbDialogService,
   ) {
   }
   canActivate(
@@ -27,18 +30,19 @@ export class AuthGuard implements CanActivate {
     // **Decode JWT Token & Check Expiry**
     try {
       const decoded: any = jwtDecode(token);
-      const tokenExpiration = decoded.exp * 1000; // Convert to milliseconds
+      const tokenExpiration = decoded.exp * 1000;
       const now = Date.now();
 
       if (tokenExpiration < now) {
+        this.openPopup(); // Show popup before refresh
         return this.refreshTokenAndRetry(state.url);
       }
     } catch (error) {
       console.error("Token decoding error:", error);
+      this.openPopup(); // Show popup before refresh
       return this.refreshTokenAndRetry(state.url);
     }
 
-    // **Verify Token with Backend**
     return this.http.get(`${baseUrl}/login/auth`, {
       headers: { Authorization: `Bearer ${token}` }
     }).pipe(
@@ -46,12 +50,12 @@ export class AuthGuard implements CanActivate {
       map(() => true),
       catchError((error) => {
         console.error("Auth verification failed:", error);
+        this.openPopup(); // Show popup before refresh
         return this.refreshTokenAndRetry(state.url);
       })
     );
   }
 
-  // **Handle Token Refresh**
   private refreshTokenAndRetry(returnUrl: string): Observable<boolean | UrlTree> {
     return this.authService.refreshToken().pipe(
       take(1),
@@ -61,7 +65,6 @@ export class AuthGuard implements CanActivate {
         if (refreshResponse && refreshResponse.accesstoken) {
           sessionStorage.setItem('travelT_token', refreshResponse.accesstoken);
 
-          // **Retry authentication with new token**
           return this.http.get(`${environment.baseUrl}/login/auth`, {
             headers: { Authorization: `Bearer ${refreshResponse.accesstoken}` }
           }).pipe(
@@ -81,5 +84,8 @@ export class AuthGuard implements CanActivate {
     );
   }
 
-
+  private openPopup(): void {
+    let dialogRef = this.dialogService.open(SessionExpiredComponent);
+    dialogRef.componentRef.instance.title = 'Session Expired'; // Set title dynamically
+  }
 }
