@@ -28,10 +28,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  ngOnDestroy(): void {
-
-  }
-
   onSubmit() {
       this.authService.login(this.loginObj).subscribe({
         error: (err) => {

@@ -30,6 +30,11 @@ export class AppComponent implements OnInit {
       icon: 'people-outline',
       link: '/follower',
     },
+    {
+      title: 'Settings',
+      icon: 'settings-2-outline',
+      link: '/setting',
+    }
   ];
   items = [
     {title: "Login"},
@@ -95,6 +100,7 @@ export class AppComponent implements OnInit {
         if(res.status === 204) {
           this.sessionStorage.clear();
           AuthInterceptor.accessToken = '';
+          window.location.reload();
           // this.router.navigateByUrl('/login');
         }
       }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthRequest} from "../../shared/models/auth.request";
+import {AuthRequest, Registry} from "../../shared/models/auth.request";
 import {NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
@@ -11,9 +11,11 @@ import {HttpErrorResponse} from "@angular/common/http";
   styleUrls: ['./registry.component.scss']
 })
 export class RegistryComponent implements OnInit {
-  registerObj: AuthRequest = {
+  registerObj: Registry = {
     email : '',
-    psw : ''
+    username : '',
+    new_password: '',
+    con_password: ''
   }
   position = NbGlobalPhysicalPosition
 
@@ -29,8 +31,17 @@ export class RegistryComponent implements OnInit {
   }
 
   onSubmit(){
-    if(!this.registerObj.email || !this.registerObj.psw){
-      this.showToast("danger","Username and Password required", "Error");
+    if(this.registerObj.email === '' || this.registerObj.username === '' || this.registerObj.new_password === '' || this.registerObj.con_password === '' || this.registerObj.con_password === ''){
+      this.showToast("danger","All fields are required", "Error");
+      return;
+    }else if(this.registerObj.con_password !== this.registerObj.new_password){
+      this.showToast("danger","Password does not match", "Error");
+      return;
+    }
+    // Email validation
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(this.registerObj.email)) {
+      this.showToast("danger", "Invalid email format", "Error");
       return;
     }
     this.authService.register(this.registerObj).subscribe({

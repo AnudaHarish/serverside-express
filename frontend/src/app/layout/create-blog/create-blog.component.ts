@@ -132,10 +132,13 @@ export class CreateBlogComponent implements OnInit {
   }
 
   saveBlog(){
+    console.log("formdata",this.formData);
     const title = this.formData.value.title;
     const content = this.formData.value.content;
     const date = this.formData.value.date;
-    const formatedDate = new Date(date).toISOString().substr(0, 10) || '';
+    // Extract local date without timezone shift
+    const formatedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    // const formatedDate = date.toISOString().substr(0, 10) || '';
     console.log("dae", formatedDate);
     if(content === '' || title === '' || formatedDate === '' || this.countryName.value === ''){
       this.showToast("danger", "Blog title, content and country are required", "Error");
@@ -146,14 +149,12 @@ export class CreateBlogComponent implements OnInit {
       content: content,
       date_of_visit: formatedDate
     };
-
-    console.log("blogPostData", blogPostData);
     this.blogpostService.createBlog( {countryData: this.countryData, blogPostData:blogPostData} ).subscribe({
       error: err => {
-        console.log(err)
+        this.showToast("danger",err.error, "Error");
       },
       next: (res) => {
-        console.log(res)
+        this.showToast("success","Blog post saved", "Success");
       }
     });
   }
@@ -201,10 +202,10 @@ export class CreateBlogComponent implements OnInit {
 
   setFormData(){
     this.formData.patchValue({
-      title: [this.data?.title],
-      content: [this.data?.content],
-      date: [ new Date(this.data?.date_of_visit)],
-      country: [this.data?.country_name],
+      title: this.data?.title,
+      content: this.data?.content,
+      date: new Date(this.data?.date_of_visit),
+      country: this.data?.country_name,
     })
   }
 
@@ -222,10 +223,18 @@ export class CreateBlogComponent implements OnInit {
   }
 
   saveEdit(){
+    console.log("form", this.formData)
+    const title = this.formData.value.title;
+    const content = this.formData.value.content;
+    const date = this.formData.value.date;
+    if(content === '' || title === '' || date === '' || this.countryName.value === ''){
+      this.showToast("danger", "Blog title, content and country are required", "Error");
+      return;
+    }
       const update = {
         title: this.formData.value.title,
         content: this.formData.value.content,
-        date_of_visit: new Date(this.data?.date_of_visit).toISOString().substr(0, 10),
+        date_of_visit: date.toISOString().substr(0, 10),
       }
       this.blogPostService.updateBlog(update, this.blogId).subscribe({
         error: err => {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {AuthRequest,AuthResponse} from "../shared/models/auth.request";
+import {AuthRequest, AuthResponse, Registry} from "../shared/models/auth.request";
 import {BehaviorSubject, catchError, map, Observable, of, throwError} from "rxjs";
 
 @Injectable({
@@ -24,8 +24,8 @@ export class AuthService {
     );
   }
 
-  register(registerObj:AuthRequest):Observable<any>{
-    return this.http.post<AuthRequest>(
+  register(registerObj:Registry):Observable<any>{
+    return this.http.post<any>(
       `${this.baseUrl}/signup`,
       registerObj,
       {observe: 'response'}

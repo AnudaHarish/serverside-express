@@ -85,8 +85,8 @@ export class ViewBlogPostComponent implements OnInit {
   }
 
   sendComment(){
-    console.log("value",this.commentsControl.value);
     if(!this.commentsControl.value){
+      this.showToast("danger", "Pl add a comment", "Error");
       return;
     }
     this.commentService.addComment(this.commentsControl.value, this.blogId).subscribe({
@@ -95,8 +95,10 @@ export class ViewBlogPostComponent implements OnInit {
         if(error.error === 'Access token expired'){
           this.utilityService.openPopup();
         }
+        this.showToast("danger", error.error, "Error");
       },
       next: res => {
+        this.showToast("success","Added", "Success");
         this.commentsControl.reset();
         this.getData();
       }
@@ -105,7 +107,12 @@ export class ViewBlogPostComponent implements OnInit {
 
   initiateFormGroup(){
     this.data.comments.forEach( (comment:any) => {
-      this.commentsForm.addControl(comment.id.toString(), new FormControl(comment.comment));
+      const control = new FormControl(comment.comment);
+      // Disable if the comment is NOT related to the current logged-in user
+      if (comment.user_id !== this.userId) {
+        control.disable();
+      }
+      this.commentsForm.addControl(comment.id.toString(), control);
     });
     console.log(this.commentsForm.value);
   }
@@ -127,11 +134,15 @@ export class ViewBlogPostComponent implements OnInit {
           if(error.error === 'Access token expired'){
             this.utilityService.openPopup();
           }
+          this.showToast("danger", error.error, "Error");
         },
         next: res => {
+          this.showToast("success","Updated", "Success");
           this.getData();
         }
       });
+    }else{
+      this.showToast("danger", "Pl add a comment", "Error");
     }
   }
 
@@ -193,6 +204,7 @@ export class ViewBlogPostComponent implements OnInit {
   }
 
   editBlog(){
+    console.log(this.blogId);
     this.router.navigate(['/create', this.blogId]);
   }
 
@@ -210,5 +222,9 @@ export class ViewBlogPostComponent implements OnInit {
         this.showToast("success", "Blog post deleted", "Success");
       }
     })
+  }
+
+  formatJSON(data:any):any{
+    return JSON.parse(data);
   }
 }

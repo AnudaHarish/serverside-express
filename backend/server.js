@@ -48,7 +48,7 @@ app.use(verifyJwt);
 app.get("/api", (req,res) => {
     res.status(200).json({"message":"default path"});
 });
-
+app.use("/api/user", require("./routes/user"));
 app.use("/api/pBlog", require("./routes/blogPost"));
 app.use("/api/countries", require("./routes/countries"));
 app.use("/api/react", require("./routes/userReaction"));

@@ -11,12 +11,39 @@
             </div>
             <div class="row">
               <form class="register-form">
-                <div class="row mb-3">
-                  <div class="col">
-                    <input nbInput [(ngModel)]="registerObj.email" type="text" placeholder="username" name="username"/>
+                <div class="row mb-1">
+                  <div class="col pt-1">
+                    <span>Username:</span>
                   </div>
                   <div class="col">
-                    <input nbInput  [(ngModel)]="registerObj.psw" type="password" placeholder="password" name="password"/>
+                    <input nbInput  [(ngModel)]="registerObj.username" type="text" placeholder="username" name="username"/>
+                  </div>
+                </div>
+                <div class="row mb-1">
+                  <div class="col pt-1">
+                    <span>Email:</span>
+                  </div>
+                  <div class="col">
+                    <input nbInput  [(ngModel)]="registerObj.email" type="email" placeholder="email" name="email" required #emailInput="ngModel"/>
+                    <span *ngIf="emailInput.invalid && emailInput.touched" class="error">
+                         Invalid email format
+                    </span>
+                  </div>
+                </div>
+                <div class="row mb-1">
+                  <div class="col pt-1">
+                    <span>New password:</span>
+                  </div>
+                  <div class="col">
+                    <input nbInput  [(ngModel)]="registerObj.new_password" type="password" placeholder="new password" name="new password"/>
+                  </div>
+                </div>
+                <div class="row mb-1">
+                  <div class="col pt-1">
+                    <span>Confirm password:</span>
+                  </div>
+                  <div class="col">
+                    <input nbInput  [(ngModel)]="registerObj.con_password" type="password" placeholder="confirm password" name="confirm password"/>
                   </div>
                 </div>
                 <div class="row justify-content-center mt-3">

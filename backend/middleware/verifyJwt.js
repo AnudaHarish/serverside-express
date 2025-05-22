@@ -38,7 +38,7 @@ const verifyJwt = async (req, res, next) => {
         }
         req.user = {
             id: decoded.id,
-            email: decoded.email,
+            username: decoded.username,
         };
         next();
     }catch(err){

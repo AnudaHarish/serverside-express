@@ -12,6 +12,7 @@ import {MatSort} from "@angular/material/sort";
 import {BlogPostService} from "../../service/blog-post.service";
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
+import {UtilityService} from "../../service/utility.service";
 
 interface BlogPost {
   id: number;
@@ -65,7 +66,8 @@ export class DashboardComponent implements OnInit {
     private dialogService: NbDialogService,
     private blogPostService: BlogPostService,
     private userService: AuthService,
-    private router: Router
+    private router: Router,
+    private utilityService: UtilityService,
   ) { }
 
   ngOnInit(): void {
@@ -74,6 +76,10 @@ export class DashboardComponent implements OnInit {
     this.filterControl = new FormControl("newest");
     this.pageSizeControl = new FormControl(JSON.stringify(this.pageSize));
     this.options = this.sessionStorage.getItem("nameList") || ['option 1', 'option 2', 'option 3', 'option 4'];
+    const needCheck = this.utilityService.isAvailable();
+    if (needCheck) {
+      this.utilityService.checkAuth();
+    }
     this.getUserNameList();
     this.filteredControlOptions$ = of(this.options);
     this.filteredControlOptions$ = this.countryName.valueChanges
@@ -108,33 +114,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getCountryDetails(){
-    console.log("country",this.countryName.value)
-    // if(this.countryName.value == ""){
-    //   this.showToast("danger", "Please select a country name", "Error");
-    //   return;
-    // }
     this.fetchData();
-    // this.countryService.getCountryDetail(this.countryName.value).subscribe({
-    //   error: err => {
-    //     console.log(err)
-    //     if(err?.error === 'Access token expired'){
-    //       this.openPopup();
-    //     }
-    //     this.showToast("danger", "Error while fetching country details", "Error");
-    //     this.isVisible = false;
-    //   },
-    //   next: (res) => {
-    //     console.log(res);
-    //     const selectedCountry = res[0];
-    //     this.countryObj.name = selectedCountry.name;
-    //     this.countryObj.languages = selectedCountry.languages;
-    //     this.countryObj.capital = selectedCountry.capital;
-    //     this.countryObj.flag = selectedCountry.flag;
-    //     this.countryObj.currency = selectedCountry.currency;
-    //     this.isVisible = true;
-    //     this.cd.detectChanges();
-    //   }
-    // })
   }
 
   showToast(status: any, message: string, ref: string) {
