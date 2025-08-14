@@ -46,5 +46,4 @@ testing criterias
      - Missing cookie → 400 Bad Request  
 
 5. Security Checks  
-   - Access `/api/countries` without JWT → 403 Forbidden  
-   - SQL injection attempt → 500 Internal Server Error (sanitized)  
+   - Access `/api/countries` without JWT → 403 Forbidden   
